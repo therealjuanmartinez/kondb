@@ -174,5 +174,21 @@ namespace JIndexer
             */
         }
 
+        private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            List<string> selection = new List<string>();
+
+
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                int imgIndex = item.ImageIndex;
+                //selection.Add(filenames[imgIndex]);
+                selection.Add(item.SubItems[0].Text);
+            }
+
+            DataObject data = new DataObject(DataFormats.FileDrop, selection.ToArray());
+            DoDragDrop(data, DragDropEffects.Copy);
+            //DoDragDrop("C:\\temp\\training.xlsx", DragDropEffects.Copy);
+        }
     }
 }

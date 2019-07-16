@@ -37,9 +37,11 @@
             // listView1
             // 
             this.listView1.AllowColumnReorder = true;
+            this.listView1.AllowDrop = true;
             this.listView1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.ForeColor = System.Drawing.SystemColors.InactiveBorder;
+            this.listView1.FullRowSelect = true;
             this.listView1.Location = new System.Drawing.Point(3, 195);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(2135, 886);
@@ -47,6 +49,7 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
+            this.listView1.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.listView1_ItemDrag);
             this.listView1.SizeChanged += new System.EventHandler(this.listView1_SizeChanged);
             // 
             // tableLayoutPanel1

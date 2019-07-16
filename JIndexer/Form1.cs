@@ -73,6 +73,9 @@ namespace JIndexer
         }
         
 
+
+        /*
+
         private void listBox1_DragLeave_1(object sender, EventArgs e)
         {
             Debug.Print("fdsa");
@@ -88,6 +91,7 @@ namespace JIndexer
         {
             Debug.Print("downfdsa");
         }
+        */
 
 
 

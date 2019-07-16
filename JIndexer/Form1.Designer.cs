@@ -42,6 +42,7 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.ForeColor = System.Drawing.SystemColors.InactiveBorder;
             this.listView1.FullRowSelect = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(3, 195);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(2135, 886);

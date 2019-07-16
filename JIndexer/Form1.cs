@@ -83,6 +83,8 @@ namespace JIndexer
             // Get the new sorting column.
             ColumnHeader new_sorting_column = listView1.Columns[e.Column];
 
+            Debug.Print("Column Click");
+
             // Figure out the new sorting order.
             System.Windows.Forms.SortOrder sort_order;
             if (SortingColumn == null)
@@ -169,5 +171,6 @@ namespace JIndexer
             Resizing = false;
             */
         }
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -24,16 +25,44 @@ namespace JIndexer
 
             for (int i = 0; i < files.Length; i++)
             {
-                table.Rows.Add(files[i]);
+                //table.Rows.Add(files[i]);
+                listBox1.Items.Add(files[i]);
             }
 
-            dataGridView1.DataSource = table;
+
+
+            //dataGridView1.DataSource = table;
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void listBox1_DragLeave(object sender, EventArgs e)
         {
-          
+            ListBox lb = sender as ListBox;
+
+            var item = lb.SelectedItem;
+
+            //lb.Items.Remove(lb.SelectedItem);
+            MessageBox.Show(item.ToString());
+
         }
+
+     
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_DragLeave_1(object sender, EventArgs e)
+        {
+            Debug.Print("fdsa");
+//            MessageBox.Show("Leave " + listBox1.SelectedItem.ToString());
+        }
+
+        private void listBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            Debug.Print("downfdsa");
+
+        }
+
     }
 }

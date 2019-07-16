@@ -43,6 +43,12 @@ namespace JIndexer
 
                 string[] row = { files[i], "ffa", Convert.ToString(i), starStr };
                 var listViewItem = new ListViewItem(row);
+
+                if (i % 2 == 0)
+                {
+                    listViewItem.ForeColor = Color.DimGray;
+                }
+
                 listView1.Items.Add(listViewItem);
             }
 
@@ -254,7 +260,13 @@ namespace JIndexer
                     Debug.Print(item.SubItems[0].Text);
 
 
-                    MenuItem[] mi = new MenuItem[] { new MenuItem("Hello"), new MenuItem("World"), new MenuItem(item.Name) };
+                    MenuItem[] mi = new MenuItem[] {
+                        new MenuItem("Clear Tags"),
+                        new MenuItem("Add Tags"),
+                        new MenuItem("Works"),
+                        new MenuItem("Doesn't Work"),
+                        new MenuItem("Open Containing Folder")
+                    };
                     listView1.ContextMenu = new ContextMenu(mi);
                     //match = true;
                     //break;

@@ -18,18 +18,17 @@ namespace JIndexer
         {
             InitializeComponent();
 
+            
             listView1.Columns.Add("title");
-            listView1.Columns.Add("next");
+            listView1.Columns.Add("path");
             listView1.Columns.Add("number");
             listView1.Columns.Add("star");
 
-
+            /*
             String[] files = Directory.GetFiles(@"C:\temp");
             DataTable table = new DataTable();
             table.Columns.Add(new DataColumn());
             table.Rows.Add("File Name");
-
-            string star = Convert.ToString('\u2605');
 
             var count = 0;
             for (int i = 0; i < files.Length; i++)
@@ -51,9 +50,26 @@ namespace JIndexer
 
                 listView1.Items.Add(listViewItem);
             }
+            */
 
             SizeLastColumn(listView1);
             //dataGridView1.DataSource = table;
+        }
+
+        const char star = ('\u2605');
+
+        private void addToGrid(string file, int stars)
+        {
+            string starr = "";
+            for (int i = 0; i < stars; i++)
+            {
+                starr += star;
+            }
+            
+            string[] row = { Path.GetFileNameWithoutExtension(file),
+                               file, null, starr };
+            var listViewItem = new ListViewItem(row);
+            listView1.Items.Add(listViewItem);
         }
 
 
@@ -75,8 +91,8 @@ namespace JIndexer
             {
                 //lv.Columns[lv.Columns.Count - 1].Width = -2;
 
-                int x = lv.Width / 5 == 0 ? 1 : lv.Width / 5;
-                lv.Columns[0].Width = x * 2;
+                int x = lv.Width / 6 == 0 ? 1 : lv.Width / 6;
+                lv.Columns[0].Width = x * 3;
                 lv.Columns[1].Width = x ;
                 lv.Columns[2].Width = x;
                 lv.Columns[3].Width = x;
@@ -193,7 +209,7 @@ namespace JIndexer
         private bool Resizing = false;
         private void listView1_SizeChanged(object sender, EventArgs e)
         {
-            SizeLastColumn((ListView)sender);
+            //SizeLastColumn((ListView)sender);
 
             /*
             // Don't allow overlapping of SizeChanged calls
@@ -236,7 +252,7 @@ namespace JIndexer
             {
                 int imgIndex = item.ImageIndex;
                 //selection.Add(filenames[imgIndex]);
-                selection.Add(item.SubItems[0].Text);
+                selection.Add(item.SubItems[1].Text);
             }
 
             DataObject data = new DataObject(DataFormats.FileDrop, selection.ToArray());
@@ -248,17 +264,14 @@ namespace JIndexer
         {
             if (e.Button == MouseButtons.Right)
             {
-
                 List<string> selection = new List<string>();
-
 
                 foreach (ListViewItem item in listView1.SelectedItems)
                 {
                     int imgIndex = item.ImageIndex;
                     //selection.Add(filenames[imgIndex]);
                     selection.Add(item.SubItems[0].Text);
-                    Debug.Print(item.SubItems[0].Text);
-
+                    //Debug.Print(item.SubItems[0].Text);
 
                     MenuItem[] mi = new MenuItem[] {
                         new MenuItem("Clear Tags"),
@@ -277,8 +290,69 @@ namespace JIndexer
                 if (listView1.FocusedItem.Bounds.Contains(e.Location))
                 {
                     MessageBox.Show("right-click");
+            listView1.Columns.Add("number");
                 }*/
             }
+        }
+
+
+     
+
+        private void listView1_DragDrop(object sender, DragEventArgs e)
+        {
+
+            String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string fileOrDir in files)
+            {
+
+                considerItemForGrid(fileOrDir);
+            }
+        }
+
+        private void considerItemForGrid(string fileOrDirectory)
+        {
+            /*
+            FileAttributes attr = File.GetAttributes(fileOrDirectory);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                Debug.Print(fileOrDirectory + "Its a directory");
+                Directory.getfile
+            }
+            else
+                Debug.Print(fileOrDirectory + "Its a file");
+                */
+
+            try
+            {
+                foreach (string d in Directory.GetDirectories(fileOrDirectory))
+                {
+                    foreach (string f in Directory.GetFiles(d))
+                    {
+                        //Console.WriteLine(f);
+                        if (Path.GetExtension(f).ToLower() == ".nki")
+                        {
+                            addToGrid(f, 3);
+                        }
+                    }
+                    considerItemForGrid(d); //recurse into directory
+                }
+            }
+            catch (System.Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+            }
+        }
+
+        private void listView1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+
+         
+        }
+
+        private void Form1_ResizeEnd(object sender, EventArgs e)
+        {
+            SizeLastColumn(listView1);
         }
     }
 }

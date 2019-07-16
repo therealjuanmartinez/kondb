@@ -28,29 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.listView1 = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
-            // listBox1
+            // listView1
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 29;
-            this.listBox1.Location = new System.Drawing.Point(73, 43);
-            this.listBox1.MultiColumn = true;
-            this.listBox1.Name = "listBox1";
-            this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBox1.Size = new System.Drawing.Size(661, 236);
-            this.listBox1.TabIndex = 0;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            this.listBox1.DragLeave += new System.EventHandler(this.listBox1_DragLeave_1);
-            this.listBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listBox1_MouseDown);
+            this.listView1.AllowColumnReorder = true;
+            this.listView1.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.listView1.ForeColor = System.Drawing.SystemColors.InactiveBorder;
+            this.listView1.Location = new System.Drawing.Point(270, 61);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(1363, 889);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.listBox1);
+            this.ClientSize = new System.Drawing.Size(2141, 1084);
+            this.Controls.Add(this.listView1);
             this.Name = "Form1";
             this.Text = "x`";
             this.ResumeLayout(false);
@@ -59,7 +57,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListView listView1;
     }
 }
 

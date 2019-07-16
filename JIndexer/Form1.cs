@@ -21,16 +21,18 @@ namespace JIndexer
             listView1.Columns.Add("title");
             listView1.Columns.Add("next");
             listView1.Columns.Add("number");
+            listView1.Columns.Add("star");
 
             String[] files = Directory.GetFiles(@"C:\temp");
             DataTable table = new DataTable();
             table.Columns.Add(new DataColumn());
             table.Rows.Add("File Name");
 
+            string star = Convert.ToString('\u2605');
 
             for (int i = 0; i < files.Length; i++)
             {
-                string[] row = { files[i], "ffa", Convert.ToString(i) };
+                string[] row = { files[i], "ffa", Convert.ToString(i), star + star };
                 var listViewItem = new ListViewItem(row);
                 listView1.Items.Add(listViewItem);
             }

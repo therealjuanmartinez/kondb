@@ -24,6 +24,8 @@ namespace JIndexer
             listView1.Columns.Add("number");
             listView1.Columns.Add("star");
 
+          // DbHelper.createDb();
+
             /*
             String[] files = Directory.GetFiles(@"C:\temp");
             DataTable table = new DataTable();
@@ -52,14 +54,21 @@ namespace JIndexer
             }
             */
 
+            var instruments = DbHelper.GetInstruments();
+            foreach (var i in instruments)
+            {
+                addToGrid(i);
+            }
+
             SizeLastColumn(listView1);
             //dataGridView1.DataSource = table;
         }
 
         const char star = ('\u2605');
 
-        private void addToGrid(string file, int stars)
+        private void addToGridAndDb(string file, int stars)
         {
+            //todo refactor
             string starr = "";
             for (int i = 0; i < stars; i++)
             {
@@ -70,7 +79,27 @@ namespace JIndexer
                                file, null, starr };
             var listViewItem = new ListViewItem(row);
             listView1.Items.Add(listViewItem);
+
+            var fi = new FileInfo(row[1]);
+            var inst = new Instrument(row[0], row[1], 0, "", fi.Length, 0);
+            DbHelper.insertRec(inst);
         }
+
+
+        private void addToGrid(Instrument i)
+        {
+            string starr = "";
+            for (int j = 0; j < i.GetStars(); j++)
+            {
+                starr += star;
+            }
+
+            string[] row = { i.GetName(),
+                               i.GetFile(), i.GetTags(), starr };
+            var listViewItem = new ListViewItem(row);
+            listView1.Items.Add(listViewItem);
+        }
+
 
 
         private void listBox1_DragLeave(object sender, EventArgs e)
@@ -212,7 +241,7 @@ namespace JIndexer
             //SizeLastColumn((ListView)sender);
 
             /*
-            // Don't allow overlapping of SizeChanged calls
+            // Don't allow overlapping of SizeChanged callse
             if (!Resizing)
             {
                 // Set the resizing flag
@@ -234,6 +263,7 @@ namespace JIndexer
                     {
                         float colPercentage = (Convert.ToInt32(listView.Columns[i].Tag) / totalColumnWidth);
                         listView.Columns[i].Width = (int)(colPercentage * listView.ClientRectangle.Width);
+
                     }
                 }
             }
@@ -311,36 +341,58 @@ namespace JIndexer
 
         private void considerItemForGrid(string fileOrDirectory)
         {
-            /*
             FileAttributes attr = File.GetAttributes(fileOrDirectory);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                Debug.Print(fileOrDirectory + "Its a directory");
-                Directory.getfile
+               // Debug.Print(fileOrDirectory + "Its a directory");
+                foreach (string f in Directory.GetFiles(fileOrDirectory))
+                {
+                    considerItemForGrid(f);
+                }
+                try
+                {
+                    foreach (string d in Directory.GetDirectories(fileOrDirectory))
+                    {
+                        considerItemForGrid(d);
+                    }
+                }
+                catch (System.Exception excpt)
+                {
+                    Console.WriteLine(excpt.Message);
+                }
+
             }
             else
-                Debug.Print(fileOrDirectory + "Its a file");
-                */
+            {
+               // Debug.Print(fileOrDirectory + "Its a file");
+                if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki")
+                {
+                    addToGridAndDb(fileOrDirectory, 0);
+                    return;
+                }
+            }
 
+
+
+
+
+
+
+
+          
+
+            /*
             try
             {
                 foreach (string d in Directory.GetDirectories(fileOrDirectory))
                 {
-                    foreach (string f in Directory.GetFiles(d))
-                    {
-                        //Console.WriteLine(f);
-                        if (Path.GetExtension(f).ToLower() == ".nki")
-                        {
-                            addToGrid(f, 3);
-                        }
-                    }
                     considerItemForGrid(d); //recurse into directory
                 }
             }
             catch (System.Exception excpt)
             {
                 Console.WriteLine(excpt.Message);
-            }
+            }*/
         }
 
         private void listView1_DragEnter(object sender, DragEventArgs e)

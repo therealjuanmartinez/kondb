@@ -23,6 +23,7 @@ namespace JIndexer
             listView1.Columns.Add("number");
             listView1.Columns.Add("star");
 
+
             String[] files = Directory.GetFiles(@"C:\temp");
             DataTable table = new DataTable();
             table.Columns.Add(new DataColumn());
@@ -37,7 +38,7 @@ namespace JIndexer
                 listView1.Items.Add(listViewItem);
             }
 
-
+            SizeLastColumn(listView1);
             //dataGridView1.DataSource = table;
         }
 
@@ -53,11 +54,24 @@ namespace JIndexer
 
         }
 
-     
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
+        private void SizeLastColumn(ListView lv)
+        {
+            try
+            {
+                //lv.Columns[lv.Columns.Count - 1].Width = -2;
+
+                int x = lv.Width / 5 == 0 ? 1 : lv.Width / 5;
+                lv.Columns[0].Width = x * 2;
+                lv.Columns[1].Width = x ;
+                lv.Columns[2].Width = x;
+                lv.Columns[3].Width = x;
+            }
+
+            catch (Exception e)
+            { }
         }
+        
 
         private void listBox1_DragLeave_1(object sender, EventArgs e)
         {
@@ -142,6 +156,8 @@ namespace JIndexer
         private bool Resizing = false;
         private void listView1_SizeChanged(object sender, EventArgs e)
         {
+            SizeLastColumn((ListView)sender);
+
             /*
             // Don't allow overlapping of SizeChanged calls
             if (!Resizing)

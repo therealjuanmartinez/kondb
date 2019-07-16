@@ -210,5 +210,36 @@ namespace JIndexer
             DoDragDrop(data, DragDropEffects.Copy);
             //DoDragDrop("C:\\temp\\training.xlsx", DragDropEffects.Copy);
         }
+
+        private void listView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+
+                List<string> selection = new List<string>();
+
+
+                foreach (ListViewItem item in listView1.SelectedItems)
+                {
+                    int imgIndex = item.ImageIndex;
+                    //selection.Add(filenames[imgIndex]);
+                    selection.Add(item.SubItems[0].Text);
+                    Debug.Print(item.SubItems[0].Text);
+
+
+                    MenuItem[] mi = new MenuItem[] { new MenuItem("Hello"), new MenuItem("World"), new MenuItem(item.Name) };
+                    listView1.ContextMenu = new ContextMenu(mi);
+                    //match = true;
+                    //break;
+
+                    listView1.ContextMenu.Show(listView1, new Point(e.X, e.Y));
+                }
+                /*
+                if (listView1.FocusedItem.Bounds.Contains(e.Location))
+                {
+                    MessageBox.Show("right-click");
+                }*/
+            }
+        }
     }
 }

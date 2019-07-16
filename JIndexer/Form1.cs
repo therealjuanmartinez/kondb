@@ -31,9 +31,17 @@ namespace JIndexer
 
             string star = Convert.ToString('\u2605');
 
+            var count = 0;
             for (int i = 0; i < files.Length; i++)
             {
-                string[] row = { files[i], "ffa", Convert.ToString(i), star + star };
+                var starStr = "";
+                for (int j = 0; j < count; j++)
+                {
+                    starStr += star;
+                }
+                count = (count > 4) ? 0 : count + 1;
+
+                string[] row = { files[i], "ffa", Convert.ToString(i), starStr };
                 var listViewItem = new ListViewItem(row);
                 listView1.Items.Add(listViewItem);
             }
@@ -154,6 +162,25 @@ namespace JIndexer
 
             // Sort.
             listView1.Sort();
+
+
+
+            //Ensure selected item can be seen after sorting
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                var index = 0;
+                for (int i = 0; i < listView1.Items.Count; i++)
+                {
+                    var lvi = listView1.Items[i];
+                    if (lvi.Selected)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                listView1.EnsureVisible(index);
+                break;
+            }
         }
 
 

@@ -43,6 +43,88 @@ namespace JIndexer
         }
 
 
+        public static List<string> Dedupe(List<Instrument> instruments, bool favorTopAlpha)
+        {
+            List<string> removedFilenames = new List<string>();
+
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+
+            m_dbConnection.Open();
+
+            //for each record
+            //   select all with matching name in set of files provided, order based on favortopalpha
+            //    make sure it's >=2 that come back
+            //    delete the first one
+            //    add too collection
+            //     move to next one
+
+            foreach (Instrument i in instruments)
+            {
+
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+
+                command.CommandType = CommandType.Text;
+
+                command.CommandText = "select name, file from items where name = @name and file in (";
+                SQLiteParameter lookupValue = new SQLiteParameter("@name");
+                command.Parameters.Add(lookupValue);
+                lookupValue.Value = i.GetName();
+
+                var count = 0;
+                foreach (Instrument ii in instruments)
+                {
+                    if (count > 0)
+                    {
+                        command.CommandText += ", ";
+                    }
+                    command.CommandText += "@file" + count;
+                    lookupValue = new SQLiteParameter("@file" + count);
+                    command.Parameters.Add(lookupValue);
+                    lookupValue.Value = ii.GetFile();
+                    count++;
+                }
+                command.CommandText += ") ";
+                if (favorTopAlpha)
+                {
+                    command.CommandText += "ORDER BY name DESC;";
+                }
+                else
+                {
+                    command.CommandText += "ORDER BY name ASC;";
+                }
+
+                SQLiteDataReader r = command.ExecuteReader();
+
+                List<string> deleteList = new List<string>();
+
+                while (r.Read())
+                {
+                    var file = Convert.ToString(r["file"]);
+                    deleteList.Add(file);
+                }
+
+                if (deleteList.Count > 1)
+                {
+                    for (int j = 0; j < (deleteList.Count - 1); j++) //only process all but last
+                    {
+                        command = new SQLiteCommand("delete from items where file = @file", m_dbConnection);
+                        lookupValue = new SQLiteParameter("@file");
+                        command.Parameters.Add(lookupValue);
+                        lookupValue.Value = deleteList[j];
+                        command.ExecuteNonQuery();
+                        removedFilenames.Add(deleteList[j]);
+                    }
+                }
+            }
+
+            m_dbConnection.Close();
+
+            return removedFilenames;
+
+        }
+
+
         //public static void insertRec(List<Instrument> instruments)
         public static void insertRec(Instrument i)
         {

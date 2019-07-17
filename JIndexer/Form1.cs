@@ -68,6 +68,7 @@ namespace JIndexer
             string[] row = { i.GetName(), i.GetTags(),
                                i.GetFile(), starr };
             var listViewItem = new ListViewItem(row);
+            listViewItem.Name = i.GetFile(); //accessed by 'key' later when removing
             if (i.GetLoadingFails())
             {
                 listViewItem.ForeColor = Color.DimGray;
@@ -222,6 +223,8 @@ namespace JIndexer
                 MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
                 MenuItem mnuWorks = new MenuItem("Works");
                 MenuItem mnuDelete = new MenuItem("Delete from Index");
+                MenuItem mnuDedupTop = new MenuItem("Remove Duplicates Keep Top Alpha");
+                MenuItem mnuDedupBottom = new MenuItem("Remove Duplicates Keep Bottom Alpha");
                 MenuItem mnuOpenFolder = new MenuItem("Open Containing Folder");
                 mnu1star.Click += new EventHandler(menuItemClick1star);
                 mnu2star.Click += new EventHandler(menuItemClick2star);
@@ -232,6 +235,8 @@ namespace JIndexer
                 mnuDoesntWork.Click += new EventHandler(menuItemClickDoesntWork);
                 mnuWorks.Click += new EventHandler(menuItemClickWorks);
                 mnuDelete.Click += new EventHandler(menuItemRemove);
+                mnuDedupTop.Click += new EventHandler(menuItemDedupTop);
+                mnuDedupBottom.Click += new EventHandler(menuItemDedupBottom);
                 mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
 
 
@@ -247,6 +252,8 @@ namespace JIndexer
                 menuItems.Add(mnuFavorite);
                 menuItems.Add(mnuWorks);
                 menuItems.Add(mnuDoesntWork);
+                menuItems.Add(mnuDedupTop);
+                menuItems.Add(mnuDedupBottom);
                 menuItems.Add(mnuDelete);
 
 
@@ -308,6 +315,41 @@ namespace JIndexer
             }
             listView1.ContextMenu.Dispose();
         }
+
+        private void menuItemDedupTop(object sender, EventArgs e)
+        {
+            var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), true);
+            RemoveInstrumentsFromView(deletedInstruments);
+        }
+        private void menuItemDedupBottom(object sender, EventArgs e)
+        {
+            var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), false);
+            RemoveInstrumentsFromView(deletedInstruments);
+        }
+
+        private void RemoveInstrumentsFromView(List<string> filenames)
+        {
+            foreach (string instfile in filenames)
+            {
+                listView1.Items.RemoveByKey(instfile);
+            }
+        }
+
+        private List<Instrument> GetSelectedInstruments()
+        {
+            List<Instrument> instruments = new List<Instrument>();
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                var file = item.SubItems[2].Text;
+                FileInfo fi = new FileInfo(file);
+                Instrument i = new Instrument(
+                        item.SubItems[0].Text,
+                        file, 0, "", fi.Length, 0);
+                instruments.Add(i);
+            }
+            return instruments;
+        }
+
 
         private void menuItemClick1star(object sender, EventArgs e)
         {

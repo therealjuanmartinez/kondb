@@ -78,7 +78,12 @@ namespace JIndexer
             if (true)
             {
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "update items set loadingFails = 1 where file = '" + file + "';"; //todo parameterize
+                command.CommandText = "update items set loadingFails = 1 where file = @val ;"; //todo parameterize
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+                command.Parameters.Add(lookupValue);
+                lookupValue.Value = file;
+
                 command.ExecuteNonQuery();
             }
 
@@ -196,22 +201,24 @@ namespace JIndexer
             return count == 0;
         }
 
-        public static List<Instrument> GetInstruments(string searchPattern = "")
+        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false)
         {
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
 
-            var patterns = searchPattern.Split('+');
+            var patterns = searchPattern.Trim().Split('+');
             
             List<Instrument> instruments = new List<Instrument>();
             using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
             {
                 fmd.CommandText = @"SELECT name, stars, file, tags, size, loadingFails FROM items ";
-                if (searchPattern.Length > 0)
+                bool hasWhere = false;
+                if (searchPattern.Trim().Length > 0)
                 {
                     fmd.CommandText += " where ";
+                    hasWhere = true;
                     var count = 0;
                    foreach (var pattern in patterns)
                     {
@@ -247,6 +254,16 @@ namespace JIndexer
                     }
 
                 }
+
+                if (favoritesOnly) {
+                    if (hasWhere) {
+                        fmd.CommandText += " and stars = 5 ";
+                    }
+                    else {
+                        fmd.CommandText += " where stars = 5 ";
+                    }
+                }
+
                 fmd.CommandText += ";";
 
                 /*

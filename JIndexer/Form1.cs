@@ -25,7 +25,7 @@ namespace JIndexer
 
             DbHelper.createDbIfNotExists();
 
-            clearAndLoadTable();
+            //clearAndLoadTable();
         }
 
         const char star = ('\u2605');
@@ -254,7 +254,14 @@ namespace JIndexer
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 DbHelper.markDoesntWork(item.SubItems[2].Text);
-                item.ForeColor = Color.DimGray;
+                if (cbShowNonWorking.Checked)
+                {
+                    item.ForeColor = Color.DimGray;
+                }
+                else
+                {
+                    item.Remove();
+                }
             }
         }
         private void menuItemClickMakeFavorite(object sender, EventArgs e)
@@ -388,11 +395,16 @@ namespace JIndexer
 
             if (textBox1.Text.Length > 0)
             {
-                instruments = DbHelper.GetInstruments(textBox1.Text);
+                instruments = DbHelper.GetInstruments(textBox1.Text, cbShowFavoritesOnly.Checked);
             }
             else
             {
-                instruments = DbHelper.GetInstruments();
+                instruments = DbHelper.GetInstruments("", cbShowFavoritesOnly.Checked);
+            }
+
+            if (instruments.Count > 1000)
+            {
+                listView1.Sorting = SortOrder.None;
             }
 
             foreach (var i in instruments)
@@ -450,6 +462,11 @@ namespace JIndexer
 
             // don't forget to save the settings
             Properties.Settings.Default.Save();
+        }
+
+        private void cbShowFavoritesOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            clearAndLoadTable();
         }
     }
 }

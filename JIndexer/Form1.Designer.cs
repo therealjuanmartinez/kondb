@@ -34,8 +34,9 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cbShowNonWorking = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new JIndexer.MyTextBox();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.cbShowFavoritesOnly = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new JIndexer.MyTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -84,6 +85,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.cbShowFavoritesOnly);
             this.groupBox1.Controls.Add(this.lblStatus);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cbShowNonWorking);
@@ -117,6 +119,26 @@
             this.cbShowNonWorking.UseVisualStyleBackColor = true;
             this.cbShowNonWorking.CheckedChanged += new System.EventHandler(this.cbShowNonWorking_CheckedChanged);
             // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(880, 39);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(20, 17);
+            this.lblStatus.TabIndex = 3;
+            this.lblStatus.Text = "...";
+            // 
+            // cbShowFavoritesOnly
+            // 
+            this.cbShowFavoritesOnly.AutoSize = true;
+            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(608, 41);
+            this.cbShowFavoritesOnly.Name = "cbShowFavoritesOnly";
+            this.cbShowFavoritesOnly.Size = new System.Drawing.Size(159, 21);
+            this.cbShowFavoritesOnly.TabIndex = 4;
+            this.cbShowFavoritesOnly.Text = "Show Favorites Only";
+            this.cbShowFavoritesOnly.UseVisualStyleBackColor = true;
+            this.cbShowFavoritesOnly.CheckedChanged += new System.EventHandler(this.cbShowFavoritesOnly_CheckedChanged);
+            // 
             // textBox1
             // 
             this.textBox1.DelayedTextChangedTimeout = 250;
@@ -126,15 +148,6 @@
             this.textBox1.Size = new System.Drawing.Size(278, 22);
             this.textBox1.TabIndex = 0;
             this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(625, 41);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(128, 17);
-            this.lblStatus.TabIndex = 3;
-            this.lblStatus.Text = "..... retrieving items";
             // 
             // Form1
             // 
@@ -167,6 +180,7 @@
         private System.Windows.Forms.CheckBox cbShowNonWorking;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.CheckBox cbShowFavoritesOnly;
     }
 }
 

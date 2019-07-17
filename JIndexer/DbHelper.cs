@@ -162,18 +162,25 @@ namespace JIndexer
             using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
             {
                 fmd.CommandText = @"SELECT count(*) as cnt FROM items ";
-                fmd.CommandText += " where file = '@val' ";
-                fmd.Parameters.AddWithValue("@val", file);
+                fmd.CommandText += " where file = @val ";
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+//                fmd.Parameters.AddWithValue("@val", file);
+
                 fmd.CommandText += ";";
 
+                fmd.Parameters.Add(lookupValue);
+                lookupValue.Value = file;
+
+                /*
                 string query = "";
                 foreach (SQLiteParameter p in fmd.Parameters)
                 {
                     query = fmd.CommandText.Replace(p.ParameterName, p.Value.ToString());
                 }
-
+*/
                 //Todo find a way to do this without creating that 'query' thing
-                fmd.CommandText = query;
+ //               fmd.CommandText = query;
                 fmd.CommandType = CommandType.Text;
                 SQLiteDataReader r = fmd.ExecuteReader();
                 while (r.Read())

@@ -10,6 +10,74 @@ using System.Threading.Tasks;
 
 namespace JIndexer
 {
+    public sealed class ConnSingleton
+    {
+        private static ConnSingleton instance = null;
+        private static readonly object padlock = new object();
+
+        ConnSingleton()
+        {
+        }
+
+        SQLiteConnection m_dbConnection;
+        bool isOpen = false;
+
+        public SQLiteConnection GetOpenConnection()
+        {
+            if (!isOpen)
+            {
+                m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+                m_dbConnection.Open();
+                isOpen = true;
+            }
+            return m_dbConnection;
+        }
+        public void CloseConnection()
+        {
+            if (isOpen)
+            {
+                m_dbConnection.Close();
+                isOpen = false;
+            }
+        }
+
+        /// <summary>
+        /// MUST run optionalEndTransactionForSpeed() if running this.  should make things fast
+        /// </summary>
+        public void optionalBeginTransactionForSpeed()
+        {
+            var conn = ConnSingleton.Instance.GetOpenConnection();
+            transaction = conn.BeginTransaction();
+        }
+        SQLiteTransaction transaction;
+
+        /// <summary>
+        /// MUST run this if ran optionalBeginTransactionForSpeed
+        /// </summary>
+        public void optionalEndTransactionForSpeed()
+        {
+            var conn = ConnSingleton.Instance.GetOpenConnection();
+            transaction.Commit();
+        }
+
+
+
+        public static ConnSingleton Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new ConnSingleton();
+                    }
+                    return instance;
+                }
+            }
+        }
+    }
+
     static class DbHelper
     {
         static string dbname = "jindexer.db";
@@ -44,14 +112,33 @@ namespace JIndexer
         }
 
 
+        public static void optionalBeginTransactionForSpeed()
+        {
+            ConnSingleton.Instance.optionalBeginTransactionForSpeed();
+        }
+
+        /// <summary>
+        /// MUST run this if ran optionalBeginTransactionForSpeed
+        /// </summary>
+        public static void optionalEndTransactionForSpeed()
+        {
+            ConnSingleton.Instance.optionalEndTransactionForSpeed();
+        }
+
+
+
         public static List<string> Dedupe(List<Instrument> selectedInstruments, bool favorTopAlpha)
         {
             List<string> removedFilenames = new List<string>();
 
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
-
             m_dbConnection.Open();
+            */
+
+            //m_dbConnection.Open();
 
             //for each record (not necessarily in this order... added a bunch of linq later)
             //   select all with matching name in set of files provided, order based on favortopalpha
@@ -119,19 +206,21 @@ namespace JIndexer
                 }
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
 
             return removedFilenames;
 
         }
 
 
+      
         //public static void insertRec(List<Instrument> instruments)
         public static void insertRec(Instrument i)
         {
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
-            m_dbConnection.Open();
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+
+            //m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            //m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -151,15 +240,18 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+           // m_dbConnection.Close();
         }
 
 
         public static void setSetting(string key, string value)
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -175,13 +267,17 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
         public static string getSetting(string key)
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+            m_dbConnection.Open();
+            */
 
             string ret = null;
 
@@ -199,7 +295,7 @@ namespace JIndexer
                 lookupValue.Value = key;
 
                 fmd.CommandType = CommandType.Text;
-                m_dbConnection.Open();
+                //m_dbConnection.Open();
                 try
                 {
                     object res = fmd.ExecuteScalar();
@@ -208,7 +304,7 @@ namespace JIndexer
                 catch (Exception e) { }
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
             return ret;
         }
 
@@ -217,9 +313,12 @@ namespace JIndexer
 
         public static void markDoesntWork(string file)
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -234,14 +333,17 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
         public static void markWorks(string file) //todo refactor with above
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -251,15 +353,18 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
 
         public static void markFavorite(string file, bool isFavorite = true) //todo refactor with above
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -274,14 +379,17 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
         public static void markStars(string file, int stars) //todo refactor with above
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -293,15 +401,18 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
 
         public static void Delete(string file) //todo refactor with above
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
             //foreach (Instrument i in instruments)
             if (true)
@@ -317,15 +428,19 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
         }
 
 
 
         public static bool IsNotInDatabase(string file)
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+            m_dbConnection.Open();
+            */
 
             int count = 0;
 
@@ -364,15 +479,18 @@ namespace JIndexer
             }
 
 
-            m_dbConnection.Close();
+            //m_dbConnection.Close();
             return count == 0;
         }
 
         public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true)
         {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+            /*
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
             m_dbConnection.Open();
+            */
 
 
             var patterns = searchPattern.Trim().Split('+');

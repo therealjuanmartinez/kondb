@@ -322,20 +322,31 @@ namespace JIndexer
 
         private void menuItemDedupTop(object sender, EventArgs e)
         {
+            DbHelper.optionalBeginTransactionForSpeed();
             var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), true);
+            DbHelper.optionalEndTransactionForSpeed();
             RemoveInstrumentsFromView(deletedInstruments);
         }
         private void menuItemDedupBottom(object sender, EventArgs e)
         {
+            DbHelper.optionalBeginTransactionForSpeed();
             var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), false);
+            DbHelper.optionalEndTransactionForSpeed();
             RemoveInstrumentsFromView(deletedInstruments);
         }
 
         private void RemoveInstrumentsFromView(List<string> filenames)
         {
-            foreach (string instfile in filenames)
+            if (filenames.Count < 200)
             {
-                listView1.Items.RemoveByKey(instfile);
+                foreach (string instfile in filenames)
+                {
+                    listView1.Items.RemoveByKey(instfile);
+                }
+            }
+            else
+            {
+                clearAndLoadTable();
             }
         }
 
@@ -437,10 +448,31 @@ namespace JIndexer
 
         private void menuItemRemove(object sender, EventArgs e)
         {
+            var doRefresh = false;// listView1.SelectedItems.Count > 100;
+
+            DbHelper.optionalBeginTransactionForSpeed();
+            var count = 0;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 DbHelper.Delete(item.SubItems[2].Text);
-                listView1.Items.Remove(item);
+
+                count++;
+                if (count == 1000)
+                {
+                    count = 0;
+                    DbHelper.optionalEndTransactionForSpeed();
+                    DbHelper.optionalBeginTransactionForSpeed();
+                }
+
+                if (!doRefresh)
+                {
+                    listView1.Items.Remove(item);
+                }
+            }
+            DbHelper.optionalEndTransactionForSpeed();
+            if (doRefresh)
+            {
+                clearAndLoadTable();
             }
         }
 
@@ -463,12 +495,24 @@ namespace JIndexer
 
             if (!dragFromInside)
             {
+                DbHelper.optionalBeginTransactionForSpeed();
                 String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
                 string fileName = null;
+                var count = 0;
                 foreach (string fileOrDir in files)
                 {
                     fileName = considerItemForGrid(fileOrDir);
+                    count++;
+
+                    if (count == 1000) //commit in batches of 1000
+                    {
+                        DbHelper.optionalEndTransactionForSpeed();
+                        DbHelper.optionalBeginTransactionForSpeed();
+                        count = 0;
+                    }
                 }
+                DbHelper.optionalEndTransactionForSpeed();
+
                 clearAndLoadTable();
                 if (fileName != null)
                 {
@@ -488,6 +532,8 @@ namespace JIndexer
             //MessageBox.Show("Elapsed: " + elapsed);
             //old way, ~6-7 seconds
             //new way, like 5 seconds.... but WAY quicker when records already present
+            //with persistent DB connection, like 2 seconds
+            //with transactions, ho boy
         }
 
         /// <summary>

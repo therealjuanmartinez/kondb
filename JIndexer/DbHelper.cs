@@ -154,7 +154,6 @@ namespace JIndexer
         {
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
-            m_dbConnection.Open();
 
             int count = 0;
 
@@ -182,12 +181,16 @@ namespace JIndexer
                 //Todo find a way to do this without creating that 'query' thing
  //               fmd.CommandText = query;
                 fmd.CommandType = CommandType.Text;
-                SQLiteDataReader r = fmd.ExecuteReader();
-                while (r.Read())
+                m_dbConnection.Open();
+                //SQLiteDataReader r = fmd.ExecuteReader();
+                object res = fmd.ExecuteScalar();
+                /*while (r.Read())
                 {
                     count = Convert.ToInt32(r["cnt"]);
-                }
+                }*/
+                count = Convert.ToInt32(res);
             }
+
 
             m_dbConnection.Close();
             return count == 0;
@@ -198,6 +201,9 @@ namespace JIndexer
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
+
+
+            var patterns = searchPattern.Split('+');
             
             List<Instrument> instruments = new List<Instrument>();
             using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
@@ -205,13 +211,33 @@ namespace JIndexer
                 fmd.CommandText = @"SELECT name, stars, file, tags, size, loadingFails FROM items ";
                 if (searchPattern.Length > 0)
                 {
-                    fmd.CommandText += " where upper(name) like '%@val%' ";
-                    fmd.CommandText += " or upper(tags) like '%@val%' ";
-                    fmd.CommandText += " or upper(file) like '%@val%' ";
-                    fmd.Parameters.AddWithValue("@val", searchPattern.ToUpper());
+                    fmd.CommandText += " where ";
+                    var count = 0;
+                   foreach (var pattern in patterns)
+                    {
+                        if (pattern.Trim().Length > 0)
+                        {
+                            if (count > 0)
+                            {
+                                fmd.CommandText += " and ";
+                            }
+                            fmd.CommandText += " (upper(name) like @val" + count;
+                            fmd.CommandText += " or upper(tags) like @val" + count;
+                            fmd.CommandText += " or upper(file) like @val" + count; 
+                            fmd.CommandText += ")";
+                            //                        fmd.Parameters.AddWithValue("@val", searchPattern.ToUpper().Trim());
+                            SQLiteParameter lookupValue = new SQLiteParameter("@val" + count);
+                            fmd.Parameters.Add(lookupValue);
+                            lookupValue.Value = "%" + pattern.ToUpper().Trim() + "%";
+
+                            count++;
+                        }
+                    }
+
                 }
                 fmd.CommandText += ";";
 
+                /*
                 string query = "";
                 foreach (SQLiteParameter p in fmd.Parameters)
                 {
@@ -223,6 +249,7 @@ namespace JIndexer
                 {
                     fmd.CommandText = query;
                 }
+                */
                 fmd.CommandType = CommandType.Text;
                 SQLiteDataReader r = fmd.ExecuteReader();
                 while (r.Read())

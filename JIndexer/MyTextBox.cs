@@ -15,7 +15,7 @@ namespace JIndexer
 
         public MyTextBox() : base()
         {
-            this.DelayedTextChangedTimeout = 250; // quarter second
+            this.DelayedTextChangedTimeout = 450; // partial second
         }
 
         protected override void Dispose(bool disposing)

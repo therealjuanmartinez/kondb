@@ -32,9 +32,9 @@ namespace JIndexer
             return name;
         }
 
-        public int GetLoadingFails()
+        public bool GetLoadingFails()
         {
-            return loadingFails;
+            return loadingFails == 1;
         }
 
         public string GetFile( )

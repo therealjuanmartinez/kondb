@@ -68,6 +68,80 @@ namespace JIndexer
             m_dbConnection.Close();
         }
 
+        public static void markDoesntWork(string file)
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = "update items set loadingFails = 1 where file = '" + file + "';"; //todo parameterize
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
+        public static void markWorks(string file) //todo refactor with above
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = "update items set loadingFails = 0 where file = '" + file + "';"; //todo parameterize
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
+
+        public static void markFavorite(string file, bool isFavorite = true) //todo refactor with above
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                if (isFavorite)
+                    command.CommandText = "update items set stars = 5 where file = '" + file + "';"; //todo parameterize
+                else
+                    command.CommandText = "update items set stars = 0 where file = '" + file + "';"; //todo parameterize
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
+        public static void Delete(string file) //todo refactor with above
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = "delete from items where file = '" + file + "';"; //todo parameterize
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
+
+
         public static bool IsNotInDatabase(string file)
         {
             SQLiteConnection m_dbConnection;

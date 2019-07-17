@@ -19,48 +19,14 @@ namespace JIndexer
             InitializeComponent();
 
             
-            listView1.Columns.Add("title");
-            listView1.Columns.Add("path");
-            listView1.Columns.Add("number");
-            listView1.Columns.Add("star");
+            listView1.Columns.Add("Title");
+            listView1.Columns.Add("Tags");
+            listView1.Columns.Add("Path");
+            listView1.Columns.Add("Stars");
 
             DbHelper.createDbIfNotExists();
 
-
-            /*
-            String[] files = Directory.GetFiles(@"C:\temp");
-            DataTable table = new DataTable();
-            table.Columns.Add(new DataColumn());
-            table.Rows.Add("File Name");
-
-            var count = 0;
-            for (int i = 0; i < files.Length; i++)
-            {
-                var starStr = "";
-                for (int j = 0; j < count; j++)
-                {
-                    starStr += star;
-                }
-                count = (count > 4) ? 0 : count + 1;
-
-                string[] row = { files[i], "ffa", Convert.ToString(i), starStr };
-                var listViewItem = new ListViewItem(row);
-
-                if (i % 2 == 0)
-                {
-                    listViewItem.ForeColor = Color.DimGray;
-                }
-
-                listView1.Items.Add(listViewItem);
-            }
-            */
-
-            var instruments = DbHelper.GetInstruments();
-            foreach (var i in instruments)
-            {
-                addToGrid(i);
-            }
-
+            clearAndLoadTable();
             SizeLastColumn(listView1);
             //dataGridView1.DataSource = table;
         }
@@ -69,20 +35,8 @@ namespace JIndexer
 
         private void addToGridAndDb(string file, int stars)
         {
-            //todo refactor
-            string starr = "";
-            for (int i = 0; i < stars; i++)
-            {
-                starr += star;
-            }
-            
-            string[] row = { Path.GetFileNameWithoutExtension(file),
-                               file, null, starr };
-            var listViewItem = new ListViewItem(row);
-            listView1.Items.Add(listViewItem);
-
-            var fi = new FileInfo(row[1]);
-            var inst = new Instrument(row[0], row[1], 0, "", fi.Length, 0);
+            var fi = new FileInfo(file);
+            var inst = new Instrument(Path.GetFileNameWithoutExtension(file), file, 0, "", fi.Length, 0);
             DbHelper.insertRec(inst);
         }
 
@@ -95,9 +49,13 @@ namespace JIndexer
                 starr += star;
             }
 
-            string[] row = { i.GetName(),
-                               i.GetFile(), i.GetTags(), starr };
+            string[] row = { i.GetName(), i.GetTags(),
+                               i.GetFile(), starr };
             var listViewItem = new ListViewItem(row);
+            if (i.GetLoadingFails())
+            {
+                listViewItem.ForeColor = Color.DimGray;
+            }
             listView1.Items.Add(listViewItem);
         }
 
@@ -122,9 +80,9 @@ namespace JIndexer
                 //lv.Columns[lv.Columns.Count - 1].Width = -2;
 
                 int x = lv.Width / 6 == 0 ? 1 : lv.Width / 6;
-                lv.Columns[0].Width = x * 3;
-                lv.Columns[1].Width = x ;
-                lv.Columns[2].Width = x;
+                lv.Columns[0].Width = x;
+                lv.Columns[1].Width = x * 2;
+                lv.Columns[2].Width = x * 2;
                 lv.Columns[3].Width = x;
             }
 
@@ -132,28 +90,6 @@ namespace JIndexer
             { }
         }
         
-
-
-        /*
-
-        private void listBox1_DragLeave_1(object sender, EventArgs e)
-        {
-            Debug.Print("fdsa");
-//            MessageBox.Show("Leave " + listBox1.SelectedItem.ToString());
-        }
-
-        private void listBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            Debug.Print("downfdsa");
-        }
-
-        private void listBox1_RightClic(object sender, MouseEventArgs e)
-        {
-            Debug.Print("downfdsa");
-        }
-        */
-
-
 
         // The column we are currently using for sorting.
         private ColumnHeader SortingColumn = null;
@@ -283,7 +219,7 @@ namespace JIndexer
             {
                 int imgIndex = item.ImageIndex;
                 //selection.Add(filenames[imgIndex]);
-                selection.Add(item.SubItems[1].Text);
+                selection.Add(item.SubItems[2].Text);
             }
 
             DataObject data = new DataObject(DataFormats.FileDrop, selection.ToArray());
@@ -300,6 +236,10 @@ namespace JIndexer
         {
             if (e.Button == MouseButtons.Right)
             {
+                if (listView1.SelectedItems.Count == 0) {
+                    return;
+                }
+
                 List<string> selection = new List<string>();
 
                 foreach (ListViewItem item in listView1.SelectedItems)
@@ -309,30 +249,123 @@ namespace JIndexer
                     selection.Add(item.SubItems[0].Text);
                     //Debug.Print(item.SubItems[0].Text);
 
-                    MenuItem[] mi = new MenuItem[] {
-                        new MenuItem("Clear Tags"),
-                        new MenuItem("Add Tags"),
-                        new MenuItem("Works"),
-                        new MenuItem("Doesn't Work"),
-                        new MenuItem("Open Containing Folder")
-                    };
-                    listView1.ContextMenu = new ContextMenu(mi);
-                    //match = true;
-                    //break;
 
+                    //  MenuItem mnuCopy = new MenuItem("Copy");
+                    //  MenuItem mnuCut = new MenuItem("Cut");
+                    MenuItem mnuFavorite = new MenuItem("Mark Favorite");
+                    MenuItem mnuNotFavorite = new MenuItem("Mark Not Favorite");
+                    MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
+                    MenuItem mnuWorks = new MenuItem("Works");
+                    MenuItem mnuDelete = new MenuItem("Delete from Index");
+                    MenuItem mnuOpenFolder = new MenuItem("Open Containing Folder");
+                    mnuFavorite.Click += new EventHandler(menuItemClickMakeFavorite);
+                    mnuNotFavorite.Click += new EventHandler(menuItemClickMakeNotFavorite);
+                    mnuDoesntWork.Click += new EventHandler(menuItemClickDoesntWork);
+                    mnuWorks.Click += new EventHandler(menuItemClickWorks);
+                    mnuDelete.Click += new EventHandler(menuItemRemove);
+                    mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
+
+                    //                    mnuPaste.Click += new EventHandler(mnuPaste_Click);
+
+                    List<MenuItem> menuItems = new List<MenuItem>();
+
+                    //menuItems.Add(new MenuItem("Clear Tags"));
+                    //menuItems.Add(new MenuItem("Add Tags"));
+                    menuItems.Add(mnuFavorite);
+                    menuItems.Add(mnuNotFavorite);
+                    menuItems.Add(mnuWorks);
+                    menuItems.Add(mnuDoesntWork);
+                    menuItems.Add(mnuDelete);
+
+
+                    //If paths match, allow "open containing folder" thing
+                    string path = "";
+                    bool pathMismatch = false;
+                    foreach (ListViewItem lvi in listView1.SelectedItems)
+                    {
+                        var temppath = Path.GetDirectoryName(lvi.SubItems[2].Text);
+                        if (path.Length > 1)
+                        {
+                            if (temppath != path)
+                            {
+                                pathMismatch = true;
+                                break;
+                            }
+                        }
+                        path = Path.GetDirectoryName(lvi.SubItems[2].Text);
+                    }
+
+                    if (!pathMismatch) {
+                        menuItems.Add(mnuOpenFolder);
+                    }
+
+
+                    listView1.ContextMenu = new ContextMenu(menuItems.ToArray());
                     listView1.ContextMenu.Show(listView1, new Point(e.X, e.Y));
                 }
-                /*
-                if (listView1.FocusedItem.Bounds.Contains(e.Location))
-                {
-                    MessageBox.Show("right-click");
-            listView1.Columns.Add("number");
-                }*/
             }
         }
 
+        private void menuItemClickDoesntWork(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markDoesntWork(item.SubItems[2].Text);
+                item.ForeColor = Color.DimGray;
+            }
+        }
+        private void menuItemClickMakeFavorite(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markFavorite(item.SubItems[2].Text);
+                string starr = "";
+                for (int i = 0; i < 5; i++) {
+                    starr += star;
+                }
+                item.SubItems[3].Text = starr;
+            }
+        }
 
-     
+        private void menuItemClickMakeNotFavorite(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markFavorite(item.SubItems[2].Text, false);
+                item.SubItems[3].Text = "";
+            }
+        }
+
+        private void menuItemClickWorks(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markWorks(item.SubItems[2].Text);
+                item.ForeColor = Color.White;
+            }
+        }
+
+        private void menuItemRemove(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.Delete(item.SubItems[2].Text);
+                listView1.Items.Remove(item);
+            }
+        }
+
+        private void menuItemOpenContainingFolder(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                //var path = Path.GetDirectoryName(item.SubItems[2].Text);
+                var path = item.SubItems[2].Text;
+                string argument = "/select, \"" + path + "\"";
+                System.Diagnostics.Process.Start("explorer.exe", argument);
+                break;
+            }
+        }
+
 
         private void listView1_DragDrop(object sender, DragEventArgs e)
         {
@@ -383,27 +416,6 @@ namespace JIndexer
                 }
             }
 
-
-
-
-
-
-
-
-          
-
-            /*
-            try
-            {
-                foreach (string d in Directory.GetDirectories(fileOrDirectory))
-                {
-                    considerItemForGrid(d); //recurse into directory
-                }
-            }
-            catch (System.Exception excpt)
-            {
-                Console.WriteLine(excpt.Message);
-            }*/
         }
 
         private void listView1_DragEnter(object sender, DragEventArgs e)
@@ -421,6 +433,11 @@ namespace JIndexer
        
         private void textBox1_DelayedTextChanged(object sender, EventArgs e)
         {
+            clearAndLoadTable();
+         }
+
+        private void clearAndLoadTable()
+        {
             listView1.Items.Clear();
 
             List<Instrument> instruments = new List<Instrument>();
@@ -436,9 +453,16 @@ namespace JIndexer
 
             foreach (var i in instruments)
             {
-                addToGrid(i);
+                if (cbShowNonWorking.Checked || !i.GetLoadingFails())
+                {
+                    addToGrid(i);
+                }
             }
+        }
 
+        private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)
+        {
+            clearAndLoadTable();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace JIndexer
 
             m_dbConnection.Open();
 
-            //for each record
+            //for each record (not necessarily in this order... added a bunch of linq later)
             //   select all with matching name in set of files provided, order based on favortopalpha
             //    make sure it's >=2 that come back
             //    delete the first one
@@ -74,35 +74,6 @@ namespace JIndexer
                 command.Parameters.Add(lookupValue);
                 lookupValue.Value = i.GetName();
 
-                /*
-                var count = 0;
-                foreach (Instrument ii in instruments)
-                {
-                    bool alreadyDeleted = removedFilenames.Any(file => file == ii.GetFile());
-                    if (!alreadyDeleted) //if we've already deleted the file, no reason to include it in list to filter by 
-                    {
-                        if (count > 0)
-                        {
-                            command.CommandText += ", ";
-                        }
-                        command.CommandText += "@file" + count;
-                        lookupValue = new SQLiteParameter("@file" + count);
-                        command.Parameters.Add(lookupValue);
-                        lookupValue.Value = ii.GetFile();
-                        count++;
-                    }
-                }
-                command.CommandText += ") ";
-                */
-                if (favorTopAlpha)
-                {
-                    command.CommandText += "ORDER BY name DESC;";
-                }
-                else
-                {
-                    command.CommandText += "ORDER BY name ASC;";
-                }
-
                 SQLiteDataReader r = command.ExecuteReader();
 
                 List<string> deleteFileList = new List<string>();
@@ -117,35 +88,32 @@ namespace JIndexer
 
                 deleteFileList.RemoveAll(file => !filesSelected.Contains(file));
 
+                //create list of instruments that is in deletefilelist
 
+                var deleteInstrumentList = selectedInstruments.Where(si => deleteFileList.Contains(si.GetFile()));
+                var uniqueFileSizes = deleteInstrumentList.Select(inst => inst.GetSize()).ToList().Distinct();
 
-
-                if (deleteFileList.Count > 1)
+                foreach (var filesize in uniqueFileSizes)
                 {
+                    List<Instrument> deleteInstrumentListUniqueBySize;
+                    if (favorTopAlpha)
+                        deleteInstrumentListUniqueBySize = deleteInstrumentList.Where(inst => inst.GetSize().Equals(filesize)).OrderByDescending(inst => inst.GetFile()).ToList();
+                    else
+                        deleteInstrumentListUniqueBySize = deleteInstrumentList.Where(inst => inst.GetSize().Equals(filesize)).OrderBy(inst => inst.GetFile()).ToList();
 
-                    long size = -1;
-                    foreach (var file in deleteFileList) //ensure sizes are equal for all before doing anything
-                    {
-                        FileInfo fi = new FileInfo(file);
-                        if (size > 0 && fi.Length != size)
-                        {
-                            deleteFileList.Clear(); break; //DO NOT PROCESS ANYTHING IN THIS SET UNLESS SIZES MATCH
-                        }
-                        size = fi.Length;
-                    }
 
-                    for (int j = 0; j < (deleteFileList.Count - 1); j++) //only process all but last
+                    if (deleteInstrumentListUniqueBySize.Count() > 1)
                     {
-                        var fileToDelete = deleteFileList[j];
-                        bool includedInListFromUI = selectedInstruments.Any(instr => instr.GetFile() == fileToDelete);
-                        if (includedInListFromUI)  //Dont delete any items that wre not in the selection from UI
+                        for (int j = 0; j < (deleteInstrumentListUniqueBySize.Count - 1); j++) //only process all but last, otherwise would delete them all
                         {
+                            var fileToDelete = deleteInstrumentListUniqueBySize[j].GetFile();
+                            bool includedInListFromUI = selectedInstruments.Any(instr => instr.GetFile() == fileToDelete);
                             command = new SQLiteCommand("delete from items where file = @file", m_dbConnection);
                             lookupValue = new SQLiteParameter("@file");
                             command.Parameters.Add(lookupValue);
-                            lookupValue.Value = deleteFileList[j];
+                            lookupValue.Value = fileToDelete;
                             command.ExecuteNonQuery();
-                            removedFilenames.Add(deleteFileList[j]);
+                            removedFilenames.Add(fileToDelete);
                         }
                     }
                 }

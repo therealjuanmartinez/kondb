@@ -628,5 +628,17 @@ namespace JIndexer
             DbHelper.setSetting("showworking", value);
             clearAndLoadTable();
         }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.A))
+            {
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    item.Selected = true;
+                }
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
     }
 }

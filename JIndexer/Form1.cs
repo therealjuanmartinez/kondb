@@ -27,7 +27,6 @@ namespace JIndexer
             DbHelper.createDbIfNotExists();
 
             clearAndLoadTable();
-            SizeLastColumn(listView1);
             //dataGridView1.DataSource = table;
         }
 
@@ -236,73 +235,74 @@ namespace JIndexer
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (listView1.SelectedItems.Count == 0) {
+                if (listView1.SelectedItems.Count == 0)
+                {
                     return;
                 }
 
-                List<string> selection = new List<string>();
+               // List<string> selection = new List<string>();
 
-                foreach (ListViewItem item in listView1.SelectedItems)
+                //int imgIndex = item.ImageIndex;
+                //selection.Add(filenames[imgIndex]);
+                //selection.Add(item.SubItems[0].Text);
+                //Debug.Print(item.SubItems[0].Text);
+
+
+                //  MenuItem mnuCopy = new MenuItem("Copy");
+                //  MenuItem mnuCut = new MenuItem("Cut");
+                MenuItem mnuFavorite = new MenuItem("Mark Favorite");
+                MenuItem mnuNotFavorite = new MenuItem("Mark Not Favorite");
+                MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
+                MenuItem mnuWorks = new MenuItem("Works");
+                MenuItem mnuDelete = new MenuItem("Delete from Index");
+                MenuItem mnuOpenFolder = new MenuItem("Open Containing Folder");
+                mnuFavorite.Click += new EventHandler(menuItemClickMakeFavorite);
+                mnuNotFavorite.Click += new EventHandler(menuItemClickMakeNotFavorite);
+                mnuDoesntWork.Click += new EventHandler(menuItemClickDoesntWork);
+                mnuWorks.Click += new EventHandler(menuItemClickWorks);
+                mnuDelete.Click += new EventHandler(menuItemRemove);
+                mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
+
+                //                    mnuPaste.Click += new EventHandler(mnuPaste_Click);
+
+                List<MenuItem> menuItems = new List<MenuItem>();
+
+                //menuItems.Add(new MenuItem("Clear Tags"));
+                //menuItems.Add(new MenuItem("Add Tags"));
+                menuItems.Add(mnuFavorite);
+                menuItems.Add(mnuNotFavorite);
+                menuItems.Add(mnuWorks);
+                menuItems.Add(mnuDoesntWork);
+                menuItems.Add(mnuDelete);
+
+
+                //If paths match, allow "open containing folder" thing
+                string path = "";
+                bool pathMismatch = false;
+                foreach (ListViewItem lvi in listView1.SelectedItems)
                 {
-                    int imgIndex = item.ImageIndex;
-                    //selection.Add(filenames[imgIndex]);
-                    selection.Add(item.SubItems[0].Text);
-                    //Debug.Print(item.SubItems[0].Text);
-
-
-                    //  MenuItem mnuCopy = new MenuItem("Copy");
-                    //  MenuItem mnuCut = new MenuItem("Cut");
-                    MenuItem mnuFavorite = new MenuItem("Mark Favorite");
-                    MenuItem mnuNotFavorite = new MenuItem("Mark Not Favorite");
-                    MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
-                    MenuItem mnuWorks = new MenuItem("Works");
-                    MenuItem mnuDelete = new MenuItem("Delete from Index");
-                    MenuItem mnuOpenFolder = new MenuItem("Open Containing Folder");
-                    mnuFavorite.Click += new EventHandler(menuItemClickMakeFavorite);
-                    mnuNotFavorite.Click += new EventHandler(menuItemClickMakeNotFavorite);
-                    mnuDoesntWork.Click += new EventHandler(menuItemClickDoesntWork);
-                    mnuWorks.Click += new EventHandler(menuItemClickWorks);
-                    mnuDelete.Click += new EventHandler(menuItemRemove);
-                    mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
-
-                    //                    mnuPaste.Click += new EventHandler(mnuPaste_Click);
-
-                    List<MenuItem> menuItems = new List<MenuItem>();
-
-                    //menuItems.Add(new MenuItem("Clear Tags"));
-                    //menuItems.Add(new MenuItem("Add Tags"));
-                    menuItems.Add(mnuFavorite);
-                    menuItems.Add(mnuNotFavorite);
-                    menuItems.Add(mnuWorks);
-                    menuItems.Add(mnuDoesntWork);
-                    menuItems.Add(mnuDelete);
-
-
-                    //If paths match, allow "open containing folder" thing
-                    string path = "";
-                    bool pathMismatch = false;
-                    foreach (ListViewItem lvi in listView1.SelectedItems)
+                    var temppath = Path.GetDirectoryName(lvi.SubItems[2].Text);
+                    if (path.Length > 1)
                     {
-                        var temppath = Path.GetDirectoryName(lvi.SubItems[2].Text);
-                        if (path.Length > 1)
+                        if (temppath != path)
                         {
-                            if (temppath != path)
-                            {
-                                pathMismatch = true;
-                                break;
-                            }
+                            pathMismatch = true;
+                            break;
                         }
-                        path = Path.GetDirectoryName(lvi.SubItems[2].Text);
                     }
-
-                    if (!pathMismatch) {
-                        menuItems.Add(mnuOpenFolder);
-                    }
-
-
-                    listView1.ContextMenu = new ContextMenu(menuItems.ToArray());
-                    listView1.ContextMenu.Show(listView1, new Point(e.X, e.Y));
+                    path = Path.GetDirectoryName(lvi.SubItems[2].Text);
                 }
+
+                if (!pathMismatch)
+                {
+                    menuItems.Add(mnuOpenFolder);
+                }
+
+                Debug.Print("Right-Click Menu");
+
+                listView1.ContextMenu = new ContextMenu(menuItems.ToArray());
+                listView1.ContextMenu.Show(listView1, new Point(e.X, e.Y));
+
             }
         }
 
@@ -325,6 +325,7 @@ namespace JIndexer
                 }
                 item.SubItems[3].Text = starr;
             }
+            listView1.ContextMenu.Dispose();
         }
 
         private void menuItemClickMakeNotFavorite(object sender, EventArgs e)
@@ -463,6 +464,47 @@ namespace JIndexer
         private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)
         {
             clearAndLoadTable();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.F1Size.Width == 0 || Properties.Settings.Default.F1Size.Height == 0)
+            {
+                // first start
+                // optional: add default values
+            }
+            else
+            {
+                this.WindowState = Properties.Settings.Default.F1State;
+
+                // we don't want a minimized window at startup
+                if (this.WindowState == FormWindowState.Minimized) this.WindowState = FormWindowState.Normal;
+
+                this.Location = Properties.Settings.Default.F1Location;
+                this.Size = Properties.Settings.Default.F1Size;
+
+                SizeLastColumn(listView1);
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.F1State = this.WindowState;
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                // save location and size if the state is normal
+                Properties.Settings.Default.F1Location = this.Location;
+                Properties.Settings.Default.F1Size = this.Size;
+            }
+            else
+            {
+                // save the RestoreBounds if the form is minimized or maximized!
+                Properties.Settings.Default.F1Location = this.RestoreBounds.Location;
+                Properties.Settings.Default.F1Size = this.RestoreBounds.Size;
+            }
+
+            // don't forget to save the settings
+            Properties.Settings.Default.Save();
         }
     }
 }

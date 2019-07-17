@@ -402,6 +402,8 @@ namespace JIndexer
                     addToGrid(i);
                 }
             }
+
+            lblStatus.Text = listView1.Items.Count + " Items";
         }
 
         private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)

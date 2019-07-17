@@ -217,18 +217,30 @@ namespace JIndexer
                     {
                         if (pattern.Trim().Length > 0)
                         {
+                            var patternnn = pattern.Trim();
                             if (count > 0)
                             {
                                 fmd.CommandText += " and ";
                             }
-                            fmd.CommandText += " (upper(name) like @val" + count;
-                            fmd.CommandText += " or upper(tags) like @val" + count;
-                            fmd.CommandText += " or upper(file) like @val" + count; 
-                            fmd.CommandText += ")";
+                            if (patternnn.ToCharArray()[0] != '-')
+                            {
+                                fmd.CommandText += " (upper(name) like @val" + count;
+                                fmd.CommandText += " or upper(tags) like @val" + count;
+                                fmd.CommandText += " or upper(file) like @val" + count;
+                                fmd.CommandText += ")";
+                            }
+                            else
+                            {
+                                patternnn = patternnn.Remove(0, 1).Trim();
+                                fmd.CommandText += " (upper(name) not like @val" + count;
+                                fmd.CommandText += " and upper(tags) not like @val" + count;
+                                fmd.CommandText += " and upper(file) not like @val" + count;
+                                fmd.CommandText += ")";
+                            }
                             //                        fmd.Parameters.AddWithValue("@val", searchPattern.ToUpper().Trim());
                             SQLiteParameter lookupValue = new SQLiteParameter("@val" + count);
                             fmd.Parameters.Add(lookupValue);
-                            lookupValue.Value = "%" + pattern.ToUpper().Trim() + "%";
+                            lookupValue.Value = "%" + patternnn.ToUpper().Trim() + "%";
 
                             count++;
                         }

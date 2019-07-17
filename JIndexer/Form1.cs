@@ -17,7 +17,6 @@ namespace JIndexer
         public Form1()
         {
             InitializeComponent();
-
             
             listView1.Columns.Add("Title");
             listView1.Columns.Add("Tags");
@@ -27,7 +26,6 @@ namespace JIndexer
             DbHelper.createDbIfNotExists();
 
             clearAndLoadTable();
-            //dataGridView1.DataSource = table;
         }
 
         const char star = ('\u2605');
@@ -171,44 +169,6 @@ namespace JIndexer
         }
 
 
-        private bool Resizing = false;
-        private void listView1_SizeChanged(object sender, EventArgs e)
-        {
-            //SizeLastColumn((ListView)sender);
-
-            /*
-            // Don't allow overlapping of SizeChanged callse
-            if (!Resizing)
-            {
-                // Set the resizing flag
-                Resizing = true;
-
-                ListView listView = sender as ListView;
-                if (listView != null)
-                {
-                    float totalColumnWidth = 0;
-
-                    // Get the sum of all column tags
-                    for (int i = 0; i < listView.Columns.Count; i++)
-                        totalColumnWidth += Convert.ToInt32(listView.Columns[i].Tag);
-
-                    // Calculate the percentage of space each column should 
-                    // occupy in reference to the other columns and then set the 
-                    // width of the column to that percentage of the visible space.
-                    for (int i = 0; i < listView.Columns.Count; i++)
-                    {
-                        float colPercentage = (Convert.ToInt32(listView.Columns[i].Tag) / totalColumnWidth);
-                        listView.Columns[i].Width = (int)(colPercentage * listView.ClientRectangle.Width);
-
-                    }
-                }
-            }
-
-            // Clear the resizing flag
-            Resizing = false;
-            */
-        }
-
         private void listView1_ItemDrag(object sender, ItemDragEventArgs e)
         {
             List<string> selection = new List<string>();
@@ -240,16 +200,6 @@ namespace JIndexer
                     return;
                 }
 
-               // List<string> selection = new List<string>();
-
-                //int imgIndex = item.ImageIndex;
-                //selection.Add(filenames[imgIndex]);
-                //selection.Add(item.SubItems[0].Text);
-                //Debug.Print(item.SubItems[0].Text);
-
-
-                //  MenuItem mnuCopy = new MenuItem("Copy");
-                //  MenuItem mnuCut = new MenuItem("Cut");
                 MenuItem mnuFavorite = new MenuItem("Mark Favorite");
                 MenuItem mnuNotFavorite = new MenuItem("Mark Not Favorite");
                 MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
@@ -263,7 +213,6 @@ namespace JIndexer
                 mnuDelete.Click += new EventHandler(menuItemRemove);
                 mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
 
-                //                    mnuPaste.Click += new EventHandler(mnuPaste_Click);
 
                 List<MenuItem> menuItems = new List<MenuItem>();
 
@@ -435,7 +384,7 @@ namespace JIndexer
         private void textBox1_DelayedTextChanged(object sender, EventArgs e)
         {
             clearAndLoadTable();
-         }
+        }
 
         private void clearAndLoadTable()
         {

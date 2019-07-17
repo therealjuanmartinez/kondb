@@ -11,10 +11,10 @@ namespace JIndexer
 {
     static class DbHelper
     {
+        static string dbname = "jindexer.db";
 
         public static void createDbIfNotExists()
         {
-            var dbname = "jindexer.db";
 
             if (!System.IO.File.Exists(dbname))
             {
@@ -43,7 +43,7 @@ namespace JIndexer
         public static void insertRec(Instrument i)
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
@@ -71,7 +71,7 @@ namespace JIndexer
         public static void markDoesntWork(string file)
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
@@ -88,7 +88,7 @@ namespace JIndexer
         public static void markWorks(string file) //todo refactor with above
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
@@ -106,7 +106,7 @@ namespace JIndexer
         public static void markFavorite(string file, bool isFavorite = true) //todo refactor with above
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
@@ -114,9 +114,11 @@ namespace JIndexer
             {
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
                 if (isFavorite)
-                    command.CommandText = "update items set stars = 5 where file = '" + file + "';"; //todo parameterize
+                    command.CommandText = @"update items set stars = 5 where file = @val;"; 
                 else
-                    command.CommandText = "update items set stars = 0 where file = '" + file + "';"; //todo parameterize
+                    command.CommandText = @"update items set stars = 0 where file = @val;"; 
+
+                command.Parameters.AddWithValue("@val", file);
                 command.ExecuteNonQuery();
             }
 
@@ -126,14 +128,20 @@ namespace JIndexer
         public static void Delete(string file) //todo refactor with above
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
             if (true)
             {
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "delete from items where file = '" + file + "';"; //todo parameterize
+                command.CommandText = "delete from items where file = @val;";
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+
+                command.Parameters.Add(lookupValue);
+                lookupValue.Value = file;
+
                 command.ExecuteNonQuery();
             }
 
@@ -145,7 +153,7 @@ namespace JIndexer
         public static bool IsNotInDatabase(string file)
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
 
             int count = 0;
@@ -181,7 +189,7 @@ namespace JIndexer
         public static List<Instrument> GetInstruments(string searchPattern = "")
         {
             SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
             m_dbConnection.Open();
             
             List<Instrument> instruments = new List<Instrument>();

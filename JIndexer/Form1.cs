@@ -61,12 +61,8 @@ namespace JIndexer
         private void listBox1_DragLeave(object sender, EventArgs e)
         {
             ListBox lb = sender as ListBox;
-
             var item = lb.SelectedItem;
-
-            //lb.Items.Remove(lb.SelectedItem);
             MessageBox.Show(item.ToString());
-
         }
 
 
@@ -77,8 +73,8 @@ namespace JIndexer
                 //lv.Columns[lv.Columns.Count - 1].Width = -2;
 
                 int x = lv.Width / 6 == 0 ? 1 : lv.Width / 6;
-                lv.Columns[0].Width = x;
-                lv.Columns[1].Width = x * 2;
+                lv.Columns[0].Width = x * 1;
+                lv.Columns[1].Width = x * 1;
                 lv.Columns[2].Width = x * 2;
                 lv.Columns[3].Width = x;
             }
@@ -145,10 +141,8 @@ namespace JIndexer
             listView1.ListViewItemSorter =
                 new ListViewComparer(e.Column, sort_order);
 
-            // Sort.
+            // Sort
             listView1.Sort();
-
-
 
             //Ensure selected item can be seen after sorting
             foreach (ListViewItem item in listView1.SelectedItems)
@@ -377,7 +371,7 @@ namespace JIndexer
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
-            SizeLastColumn(listView1);
+            //SizeLastColumn(listView1);
         }
 
        

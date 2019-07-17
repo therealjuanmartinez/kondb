@@ -98,6 +98,7 @@ namespace JIndexer
                          ", stars TINYINT " +
                          ", tags TEXT " +
                          ", loadingFails TINYINT " +
+                         ", fileExists TINYINT " + 
                          ", size INT );" +
                          "" +
                          "" +
@@ -229,7 +230,7 @@ namespace JIndexer
                 //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size) values (@name, @file, @stars, @tags, @loadingFails, @size);";
+                command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size, fileExists) values (@name, @file, @stars, @tags, @loadingFails, @size, 1);";
                 command.Parameters.AddWithValue("file", i.GetFile());
                 command.Parameters.AddWithValue("name", i.GetName());
                 command.Parameters.AddWithValue("stars", i.GetStars());
@@ -242,6 +243,8 @@ namespace JIndexer
 
            // m_dbConnection.Close();
         }
+
+
 
 
         public static void setSetting(string key, string value)
@@ -314,13 +317,7 @@ namespace JIndexer
         public static void markDoesntWork(string file)
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
-            /*
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
-            m_dbConnection.Open();
-            */
 
-            //foreach (Instrument i in instruments)
             if (true)
             {
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
@@ -333,8 +330,29 @@ namespace JIndexer
                 command.ExecuteNonQuery();
             }
 
-            //m_dbConnection.Close();
         }
+
+        public static void markMissingFile(string file, bool fileMissing = true)
+        {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                if (fileMissing)
+                    command.CommandText = "update items set fileExists = 0 where file = @val ;"; 
+                else
+                    command.CommandText = "update items set fileExists = 1 where file = @val ;"; 
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+                command.Parameters.Add(lookupValue);
+                lookupValue.Value = file;
+
+                command.ExecuteNonQuery();
+            }
+
+        }
+
 
         public static void markWorks(string file) //todo refactor with above
         {
@@ -408,27 +426,16 @@ namespace JIndexer
         public static void Delete(string file) //todo refactor with above
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
-            /*
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
-            m_dbConnection.Open();
-            */
 
-            //foreach (Instrument i in instruments)
-            if (true)
-            {
-                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "delete from items where file = @val;";
+            SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+            command.CommandText = "delete from items where file = @val;";
 
-                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+            SQLiteParameter lookupValue = new SQLiteParameter("@val");
 
-                command.Parameters.Add(lookupValue);
-                lookupValue.Value = file;
+            command.Parameters.Add(lookupValue);
+            lookupValue.Value = file;
 
-                command.ExecuteNonQuery();
-            }
-
-            //m_dbConnection.Close();
+            command.ExecuteNonQuery();
         }
 
 
@@ -436,11 +443,6 @@ namespace JIndexer
         public static bool IsNotInDatabase(string file)
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
-            /*
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
-            m_dbConnection.Open();
-            */
 
             int count = 0;
 
@@ -449,49 +451,23 @@ namespace JIndexer
             {
                 fmd.CommandText = @"SELECT count(*) as cnt FROM items ";
                 fmd.CommandText += " where file = @val ";
-
                 SQLiteParameter lookupValue = new SQLiteParameter("@val");
-//                fmd.Parameters.AddWithValue("@val", file);
 
                 fmd.CommandText += ";";
 
                 fmd.Parameters.Add(lookupValue);
                 lookupValue.Value = file;
-
-                /*
-                string query = "";
-                foreach (SQLiteParameter p in fmd.Parameters)
-                {
-                    query = fmd.CommandText.Replace(p.ParameterName, p.Value.ToString());
-                }
-*/
-                //Todo find a way to do this without creating that 'query' thing
- //               fmd.CommandText = query;
                 fmd.CommandType = CommandType.Text;
                 m_dbConnection.Open();
-                //SQLiteDataReader r = fmd.ExecuteReader();
                 object res = fmd.ExecuteScalar();
-                /*while (r.Read())
-                {
-                    count = Convert.ToInt32(r["cnt"]);
-                }*/
                 count = Convert.ToInt32(res);
             }
-
-
-            //m_dbConnection.Close();
             return count == 0;
         }
 
-        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true)
+        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true, bool missingOnly = false, bool hideMissing = false)
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
-            /*
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
-            m_dbConnection.Open();
-            */
-
 
             var patterns = searchPattern.Trim().Split('+');
             
@@ -563,21 +539,36 @@ namespace JIndexer
                     }
                 }
 
+                if (missingOnly)
+                {
+                    if (hasWhere)
+                    {
+                        fmd.CommandText += " and fileExists == 0 ";
+                    }
+                    else
+                    {
+                        fmd.CommandText += " where fileExists == 0 ";
+                        hasWhere = true;
+                    }
+                }
+
+                if (hideMissing)
+                {
+                    if (hasWhere)
+                    {
+                        fmd.CommandText += " and fileExists == 1 ";
+                    }
+                    else
+                    {
+                        fmd.CommandText += " where fileExists == 1 ";
+                        hasWhere = true;
+                    }
+                }
+
+
+
                 fmd.CommandText += ";";
 
-                /*
-                string query = "";
-                foreach (SQLiteParameter p in fmd.Parameters)
-                {
-                    query = fmd.CommandText.Replace(p.ParameterName, p.Value.ToString());
-                }
-
-                //Todo find a way to do this without creating that 'query' thing
-                if (query.Length > 0)
-                {
-                    fmd.CommandText = query;
-                }
-                */
                 fmd.CommandType = CommandType.Text;
                 SQLiteDataReader r = fmd.ExecuteReader();
                 while (r.Read())

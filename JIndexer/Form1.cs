@@ -17,7 +17,7 @@ namespace JIndexer
         public Form1()
         {
             InitializeComponent();
-            
+
             listView1.Columns.Add("Title");
             listView1.Columns.Add("Tags");
             listView1.Columns.Add("Path");
@@ -28,24 +28,43 @@ namespace JIndexer
             cbShowFavoritesOnly.CheckedChanged -= cbShowFavoritesOnly_CheckedChanged;
             cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showstarredonly") == "T") ? true : false;
             cbShowFavoritesOnly.CheckedChanged += cbShowFavoritesOnly_CheckedChanged;
+
             textBox1.DelayedTextChanged -= textBox1_DelayedTextChanged;
             textBox1.Text = DbHelper.getSetting("searchterm");
-            textBox1.DelayedTextChanged += textBox1_DelayedTextChanged;
+            textBox1.DelayedTextChanged += textBox1_DelayedTextChanged; //having this all the way down here hopefully will defeat the delay
 
             cbShowWorking.CheckedChanged -= cbShowWorking_CheckedChanged;
             cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
             cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
 
+            /*
+            cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
+            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showmissingonly") == "T") ? true : false;
+            cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
+
+            cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
+            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("hidemissing") == "T") ? true : false;
+            cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
+            */
+
+
+
+            //THIS BELOW HAPPENS BY THE DELAYEDTEXTCHANGED WHICH I CAN'T SEEM TO DISABLE UPON FIRST RUN :(
+            /*
             if (FiltersApplied())
             {
                 clearAndLoadTable();
-            }
+            }*/
+
+
+
 
         }
 
         private bool FiltersApplied()
         {
-            if (cbShowFavoritesOnly.Checked == true || textBox1.Text.Length > 2) {
+            if (cbShowFavoritesOnly.Checked == true || textBox1.Text.Length > 2)
+            {
                 return true;
             }
             return false;
@@ -106,7 +125,7 @@ namespace JIndexer
             catch (Exception e)
             { }
         }
-        
+
 
         // The column we are currently using for sorting.
         private ColumnHeader SortingColumn = null;
@@ -312,7 +331,8 @@ namespace JIndexer
             {
                 DbHelper.markFavorite(item.SubItems[2].Text);
                 string starr = "";
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++)
+                {
                     starr += star;
                 }
                 item.SubItems[3].Text = starr;
@@ -342,12 +362,18 @@ namespace JIndexer
                 foreach (string instfile in filenames)
                 {
                     listView1.Items.RemoveByKey(instfile);
+                    updateTextBoxWithItemCount();
                 }
             }
             else
             {
                 clearAndLoadTable();
             }
+        }
+
+        private void updateTextBoxWithItemCount()
+        {
+            lblStatus.Text = listView1.Items.Count + " Items";
         }
 
         private List<Instrument> GetSelectedInstruments()
@@ -474,6 +500,10 @@ namespace JIndexer
             {
                 clearAndLoadTable();
             }
+            else
+            {
+                updateTextBoxWithItemCount();
+            }
         }
 
         private void menuItemOpenContainingFolder(object sender, EventArgs e)
@@ -520,7 +550,8 @@ namespace JIndexer
                     {
                         listView1.EnsureVisible(listView1.Items.IndexOfKey(fileName));
                     }
-                    catch (Exception) {
+                    catch (Exception)
+                    {
                         //probably added while a filter was applied
                     }
                 }
@@ -546,7 +577,7 @@ namespace JIndexer
             FileAttributes attr = File.GetAttributes(fileOrDirectory);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-               // Debug.Print(fileOrDirectory + "Its a directory");
+                // Debug.Print(fileOrDirectory + "Its a directory");
                 foreach (string f in Directory.GetFiles(fileOrDirectory))
                 {
                     considerItemForGrid(f);
@@ -566,7 +597,7 @@ namespace JIndexer
             }
             else
             {
-               // Debug.Print(fileOrDirectory + "Its a file");
+                // Debug.Print(fileOrDirectory + "Its a file");
                 if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki")
                 {
                     //if (DbHelper.IsNotInDatabase(fileOrDirectory)) //just file, this varible name sucks
@@ -584,7 +615,7 @@ namespace JIndexer
         {
             e.Effect = DragDropEffects.Copy;
 
-         
+
         }
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
@@ -592,7 +623,7 @@ namespace JIndexer
             //SizeLastColumn(listView1);
         }
 
-       
+
         private void textBox1_DelayedTextChanged(object sender, EventArgs e)
         {
             if (textBox1.Text.Length > 2)
@@ -616,29 +647,26 @@ namespace JIndexer
 
             List<Instrument> instruments = new List<Instrument>();
 
+            var searchTerm = "";
             if (textBox1.Text.Length > 0)
-            {
-                instruments = DbHelper.GetInstruments(textBox1.Text, cbShowFavoritesOnly.Checked, cbShowWorking.Checked);
-            }
-            else
-            {
-                instruments = DbHelper.GetInstruments("", cbShowFavoritesOnly.Checked, cbShowWorking.Checked);
-            }
+                searchTerm = textBox1.Text;
+
+            instruments = DbHelper.GetInstruments(searchTerm, cbShowFavoritesOnly.Checked, cbShowWorking.Checked, cbShowMissing.Checked);
 
             if (instruments.Count > 1000)
             {
                 listView1.Sorting = SortOrder.None;
+                listView1.ListViewItemSorter = null;
             }
 
             foreach (var i in instruments)
             {
                 if (cbShowNonWorking.Checked || !i.GetLoadingFails())
-                {
                     addToGrid(i);
-                }
             }
 
-            lblStatus.Text = listView1.Items.Count + " Items";
+            updateTextBoxWithItemCount();
+            checkForMissingFiles();
         }
 
         private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)
@@ -711,6 +739,40 @@ namespace JIndexer
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void checkForMissingFiles()
+        {
+            DbHelper.optionalBeginTransactionForSpeed();
+            foreach (ListViewItem item in listView1.Items)
+            {
+                FileInfo fi = new FileInfo(item.SubItems[2].Text);
+                if (!fi.Exists)
+                {
+                    item.ForeColor = Color.DarkRed;
+                    DbHelper.markMissingFile(item.SubItems[2].Text);
+                }
+                else if (fi.Exists && item.ForeColor == Color.DarkRed)
+                {
+                    item.ForeColor = Color.White;
+                    DbHelper.markMissingFile(item.SubItems[2].Text, false);
+                }
+            }
+            DbHelper.optionalEndTransactionForSpeed();
+        }
+
+        private void cbShowMissing_CheckedChanged(object sender, EventArgs e)
+        {
+            string value = (cbShowMissing.Checked) ? "T" : "F";
+            DbHelper.setSetting("showmissingonly", value);
+            clearAndLoadTable();
+        }
+
+        private void cbHideMissing_CheckedChanged(object sender, EventArgs e)
+        {
+            string value = (cbShowMissing.Checked) ? "T" : "F";
+            DbHelper.setSetting("hidemissing", value);
+            clearAndLoadTable();
         }
     }
 }

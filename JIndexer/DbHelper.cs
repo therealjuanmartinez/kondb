@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -116,8 +117,21 @@ namespace JIndexer
 
                 deleteFileList.RemoveAll(file => !filesSelected.Contains(file));
 
+
                 if (deleteFileList.Count > 1)
                 {
+
+                    long size = -1;
+                    foreach (var file in deleteFileList) //ensure sizes are equal for all before doing anything
+                    {
+                        FileInfo fi = new FileInfo(file);
+                        if (size > 0 && fi.Length != size)
+                        {
+                            deleteFileList.Clear(); break; //DO NOT PROCESS ANYTHING IN THIS SET UNLESS SIZES MATCH
+                        }
+                        size = fi.Length;
+                    }
+
                     for (int j = 0; j < (deleteFileList.Count - 1); j++) //only process all but last
                     {
                         var fileToDelete = deleteFileList[j];

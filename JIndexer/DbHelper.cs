@@ -11,26 +11,30 @@ namespace JIndexer
     static class DbHelper
     {
 
-        public static void createDb()
+        public static void createDbIfNotExists()
         {
+            var dbname = "jindexer.db";
 
-            SQLiteConnection.CreateFile("jindexer.db");
-            SQLiteConnection m_dbConnection;
-            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
-            m_dbConnection.Open();
+            if (!System.IO.File.Exists(dbname))
+            {
+                SQLiteConnection.CreateFile("jindexer.db");
+                SQLiteConnection m_dbConnection;
+                m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+                m_dbConnection.Open();
 
-            string sql = "CREATE TABLE items (" +
-                     " name TEXT " +
-                     ", file TEXT " +
-                     ", stars TINYINT " +
-                     ", tags TEXT " +
-                     ", loadingFails TINYINT " +
-                     ", size INT )";
+                string sql = "CREATE TABLE items (" +
+                         " name TEXT " +
+                         ", file TEXT " +
+                         ", stars TINYINT " +
+                         ", tags TEXT " +
+                         ", loadingFails TINYINT " +
+                         ", size INT )";
 
-            SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            command.ExecuteNonQuery();
+                SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+                command.ExecuteNonQuery();
 
-            m_dbConnection.Close();
+                m_dbConnection.Close();
+            }
         }
 
 

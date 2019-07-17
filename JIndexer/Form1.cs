@@ -24,7 +24,8 @@ namespace JIndexer
             listView1.Columns.Add("number");
             listView1.Columns.Add("star");
 
-          // DbHelper.createDb();
+            DbHelper.createDbIfNotExists();
+
 
             /*
             String[] files = Directory.GetFiles(@"C:\temp");

@@ -287,9 +287,14 @@ namespace JIndexer
             }
 
             DataObject data = new DataObject(DataFormats.FileDrop, selection.ToArray());
+
+            dragFromInside = true;
             DoDragDrop(data, DragDropEffects.Copy);
+            dragFromInside = false;
             //DoDragDrop("C:\\temp\\training.xlsx", DragDropEffects.Copy);
         }
+
+        bool dragFromInside = false;
 
         private void listView1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -331,12 +336,14 @@ namespace JIndexer
 
         private void listView1_DragDrop(object sender, DragEventArgs e)
         {
-
-            String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
-            foreach (string fileOrDir in files)
+            if (!dragFromInside)
             {
+                String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (string fileOrDir in files)
+                {
 
-                considerItemForGrid(fileOrDir);
+                    considerItemForGrid(fileOrDir);
+                }
             }
         }
 

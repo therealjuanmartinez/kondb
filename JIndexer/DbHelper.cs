@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -67,7 +68,7 @@ namespace JIndexer
             m_dbConnection.Close();
         }
 
-        public static List<Instrument> GetInstruments()
+        public static List<Instrument> GetInstruments(string searchPattern = "")
         {
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
@@ -76,7 +77,27 @@ namespace JIndexer
             List<Instrument> instruments = new List<Instrument>();
             using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
             {
-                fmd.CommandText = @"SELECT name, stars, file, tags, size, loadingFails FROM items;";
+                fmd.CommandText = @"SELECT name, stars, file, tags, size, loadingFails FROM items ";
+                if (searchPattern.Length > 0)
+                {
+                    fmd.CommandText += " where upper(name) like '%@val%' ";
+                    fmd.CommandText += " or upper(tags) like '%@val%' ";
+                    fmd.CommandText += " or upper(file) like '%@val%' ";
+                    fmd.Parameters.AddWithValue("@val", searchPattern.ToUpper());
+                }
+                fmd.CommandText += ";";
+
+                string query = "";
+                foreach (SQLiteParameter p in fmd.Parameters)
+                {
+                    query = fmd.CommandText.Replace(p.ParameterName, p.Value.ToString());
+                }
+
+                //Todo find a way to do this without creating that 'query' thing
+                if (query.Length > 0)
+                {
+                    fmd.CommandText = query;
+                }
                 fmd.CommandType = CommandType.Text;
                 SQLiteDataReader r = fmd.ExecuteReader();
                 while (r.Read())

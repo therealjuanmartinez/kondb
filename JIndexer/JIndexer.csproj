@@ -59,6 +59,9 @@
     </Compile>
     <Compile Include="Instrument.cs" />
     <Compile Include="ListViewComparer.cs" />
+    <Compile Include="MyTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

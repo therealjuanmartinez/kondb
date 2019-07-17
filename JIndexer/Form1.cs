@@ -407,5 +407,28 @@ namespace JIndexer
         {
             SizeLastColumn(listView1);
         }
+
+       
+        private void textBox1_DelayedTextChanged(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();
+
+            List<Instrument> instruments = new List<Instrument>();
+
+            if (textBox1.Text.Length > 0)
+            {
+                instruments = DbHelper.GetInstruments(textBox1.Text);
+            }
+            else
+            {
+                instruments = DbHelper.GetInstruments();
+            }
+
+            foreach (var i in instruments)
+            {
+                addToGrid(i);
+            }
+
+        }
     }
 }

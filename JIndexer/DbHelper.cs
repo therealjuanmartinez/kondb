@@ -118,6 +118,8 @@ namespace JIndexer
                 deleteFileList.RemoveAll(file => !filesSelected.Contains(file));
 
 
+
+
                 if (deleteFileList.Count > 1)
                 {
 
@@ -398,7 +400,7 @@ namespace JIndexer
             return count == 0;
         }
 
-        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false)
+        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true)
         {
             SQLiteConnection m_dbConnection;
             m_dbConnection = new SQLiteConnection("Data Source="+dbname+";Version=3;");
@@ -458,6 +460,20 @@ namespace JIndexer
                     }
                     else {
                         fmd.CommandText += " where stars > 0 ";
+                        hasWhere = true;
+                    }
+                }
+
+                if (!showWorking)
+                {
+                    if (hasWhere)
+                    {
+                        fmd.CommandText += " and loadingFails == 1 ";
+                    }
+                    else
+                    {
+                        fmd.CommandText += " where loadingFails == 1 ";
+                        hasWhere = true;
                     }
                 }
 

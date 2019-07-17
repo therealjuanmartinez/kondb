@@ -32,6 +32,10 @@ namespace JIndexer
             textBox1.Text = DbHelper.getSetting("searchterm");
             textBox1.DelayedTextChanged += textBox1_DelayedTextChanged;
 
+            cbShowWorking.CheckedChanged -= cbShowWorking_CheckedChanged;
+            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
+            cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
+
             if (FiltersApplied())
             {
                 clearAndLoadTable();
@@ -542,11 +546,11 @@ namespace JIndexer
 
             if (textBox1.Text.Length > 0)
             {
-                instruments = DbHelper.GetInstruments(textBox1.Text, cbShowFavoritesOnly.Checked);
+                instruments = DbHelper.GetInstruments(textBox1.Text, cbShowFavoritesOnly.Checked, cbShowWorking.Checked);
             }
             else
             {
-                instruments = DbHelper.GetInstruments("", cbShowFavoritesOnly.Checked);
+                instruments = DbHelper.GetInstruments("", cbShowFavoritesOnly.Checked, cbShowWorking.Checked);
             }
 
             if (instruments.Count > 1000)
@@ -615,6 +619,13 @@ namespace JIndexer
         {
             string value = (cbShowFavoritesOnly.Checked) ? "T" : "F";
             DbHelper.setSetting("showstarredonly", value);
+            clearAndLoadTable();
+        }
+
+        private void cbShowWorking_CheckedChanged(object sender, EventArgs e)
+        {
+            string value = (cbShowFavoritesOnly.Checked) ? "T" : "F";
+            DbHelper.setSetting("showworking", value);
             clearAndLoadTable();
         }
     }

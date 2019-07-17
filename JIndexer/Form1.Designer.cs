@@ -32,6 +32,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbShowWorking = new System.Windows.Forms.CheckBox();
             this.cbShowFavoritesOnly = new System.Windows.Forms.CheckBox();
             this.lblStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -85,6 +86,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.cbShowWorking);
             this.groupBox1.Controls.Add(this.cbShowFavoritesOnly);
             this.groupBox1.Controls.Add(this.lblStatus);
             this.groupBox1.Controls.Add(this.label1);
@@ -98,10 +100,23 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
+            // cbShowWorking
+            // 
+            this.cbShowWorking.AutoSize = true;
+            this.cbShowWorking.Checked = true;
+            this.cbShowWorking.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbShowWorking.Location = new System.Drawing.Point(557, 39);
+            this.cbShowWorking.Name = "cbShowWorking";
+            this.cbShowWorking.Size = new System.Drawing.Size(120, 21);
+            this.cbShowWorking.TabIndex = 5;
+            this.cbShowWorking.Text = "Show Working";
+            this.cbShowWorking.UseVisualStyleBackColor = true;
+            this.cbShowWorking.CheckedChanged += new System.EventHandler(this.cbShowWorking_CheckedChanged);
+            // 
             // cbShowFavoritesOnly
             // 
             this.cbShowFavoritesOnly.AutoSize = true;
-            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(608, 41);
+            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(706, 39);
             this.cbShowFavoritesOnly.Name = "cbShowFavoritesOnly";
             this.cbShowFavoritesOnly.Size = new System.Drawing.Size(148, 21);
             this.cbShowFavoritesOnly.TabIndex = 4;
@@ -112,7 +127,7 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(880, 39);
+            this.lblStatus.Location = new System.Drawing.Point(903, 39);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(20, 17);
             this.lblStatus.TabIndex = 3;
@@ -130,7 +145,7 @@
             // cbShowNonWorking
             // 
             this.cbShowNonWorking.AutoSize = true;
-            this.cbShowNonWorking.Location = new System.Drawing.Point(436, 40);
+            this.cbShowNonWorking.Location = new System.Drawing.Point(381, 39);
             this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowNonWorking.Name = "cbShowNonWorking";
             this.cbShowNonWorking.Size = new System.Drawing.Size(151, 21);
@@ -145,7 +160,7 @@
             this.textBox1.Location = new System.Drawing.Point(106, 39);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(278, 22);
+            this.textBox1.Size = new System.Drawing.Size(255, 22);
             this.textBox1.TabIndex = 0;
             this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
             // 
@@ -181,6 +196,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.CheckBox cbShowFavoritesOnly;
+        private System.Windows.Forms.CheckBox cbShowWorking;
     }
 }
 

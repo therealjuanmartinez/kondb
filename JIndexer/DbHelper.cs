@@ -29,7 +29,11 @@ namespace JIndexer
                          ", stars TINYINT " +
                          ", tags TEXT " +
                          ", loadingFails TINYINT " +
-                         ", size INT )";
+                         ", size INT );" +
+                         "" +
+                         "" +
+                         "" +
+                         "create table settings (key text PRIMARY KEY, value text);";
 
                 SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
                 command.ExecuteNonQuery();
@@ -53,7 +57,6 @@ namespace JIndexer
                 //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "Select * From MyTable Where MyColumn = @MyValue";
                 command.CommandText = "insert into items (name, file, stars, tags, loadingFails, size) values (@name, @file, @stars, @tags, @loadingFails, @size);";
                 command.Parameters.AddWithValue("file", i.GetFile());
                 command.Parameters.AddWithValue("name", i.GetName());
@@ -67,6 +70,67 @@ namespace JIndexer
 
             m_dbConnection.Close();
         }
+
+
+        public static void setSetting(string key, string value)
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                //string sql = 
+                //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = "insert into settings (key, value) values (@key, @value) on conflict (key) DO UPDATE set value=@value;";
+                command.Parameters.AddWithValue("key", key);
+                command.Parameters.AddWithValue("value", value);
+
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
+        public static string getSetting(string key)
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+
+            string ret = null;
+
+            List<Instrument> instruments = new List<Instrument>();
+            using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
+            {
+                fmd.CommandText = @"SELECT value from settings ";
+                fmd.CommandText += " where key = @val ";
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+
+                fmd.CommandText += ";";
+
+                fmd.Parameters.Add(lookupValue);
+                lookupValue.Value = key;
+
+                fmd.CommandType = CommandType.Text;
+                m_dbConnection.Open();
+                try
+                {
+                    object res = fmd.ExecuteScalar();
+                    ret = Convert.ToString(res);
+                }
+                catch (Exception e) { }
+            }
+
+            m_dbConnection.Close();
+            return ret;
+        }
+
+
+
 
         public static void markDoesntWork(string file)
         {
@@ -129,6 +193,26 @@ namespace JIndexer
 
             m_dbConnection.Close();
         }
+
+        public static void markStars(string file, int stars) //todo refactor with above
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
+            m_dbConnection.Open();
+
+            //foreach (Instrument i in instruments)
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = @"update items set stars = " + stars + " where file = @val;";
+
+                command.Parameters.AddWithValue("@val", file);
+                command.ExecuteNonQuery();
+            }
+
+            m_dbConnection.Close();
+        }
+
 
         public static void Delete(string file) //todo refactor with above
         {
@@ -257,10 +341,10 @@ namespace JIndexer
 
                 if (favoritesOnly) {
                     if (hasWhere) {
-                        fmd.CommandText += " and stars = 5 ";
+                        fmd.CommandText += " and stars > 0 ";
                     }
                     else {
-                        fmd.CommandText += " where stars = 5 ";
+                        fmd.CommandText += " where stars > 0 ";
                     }
                 }
 

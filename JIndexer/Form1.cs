@@ -25,7 +25,26 @@ namespace JIndexer
 
             DbHelper.createDbIfNotExists();
 
-            //clearAndLoadTable();
+            cbShowFavoritesOnly.CheckedChanged -= cbShowFavoritesOnly_CheckedChanged;
+            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showstarredonly") == "T") ? true : false;
+            cbShowFavoritesOnly.CheckedChanged += cbShowFavoritesOnly_CheckedChanged;
+            textBox1.DelayedTextChanged -= textBox1_DelayedTextChanged;
+            textBox1.Text = DbHelper.getSetting("searchterm");
+            textBox1.DelayedTextChanged += textBox1_DelayedTextChanged;
+
+            if (FiltersApplied())
+            {
+                clearAndLoadTable();
+            }
+
+        }
+
+        private bool FiltersApplied()
+        {
+            if (cbShowFavoritesOnly.Checked == true || textBox1.Text.Length > 2) {
+                return true;
+            }
+            return false;
         }
 
         const char star = ('\u2605');
@@ -194,12 +213,20 @@ namespace JIndexer
                     return;
                 }
 
-                MenuItem mnuFavorite = new MenuItem("Mark Favorite");
-                MenuItem mnuNotFavorite = new MenuItem("Mark Not Favorite");
+                MenuItem mnuNotFavorite = new MenuItem("Clear Stars");
+                MenuItem mnu1star = new MenuItem("1 Stars");
+                MenuItem mnu2star = new MenuItem("2 Stars");
+                MenuItem mnu3star = new MenuItem("3 Stars");
+                MenuItem mnu4star = new MenuItem("4 Stars");
+                MenuItem mnuFavorite = new MenuItem("5 Stars");
                 MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
                 MenuItem mnuWorks = new MenuItem("Works");
                 MenuItem mnuDelete = new MenuItem("Delete from Index");
                 MenuItem mnuOpenFolder = new MenuItem("Open Containing Folder");
+                mnu1star.Click += new EventHandler(menuItemClick1star);
+                mnu2star.Click += new EventHandler(menuItemClick2star);
+                mnu3star.Click += new EventHandler(menuItemClick3star);
+                mnu4star.Click += new EventHandler(menuItemClick4star);
                 mnuFavorite.Click += new EventHandler(menuItemClickMakeFavorite);
                 mnuNotFavorite.Click += new EventHandler(menuItemClickMakeNotFavorite);
                 mnuDoesntWork.Click += new EventHandler(menuItemClickDoesntWork);
@@ -212,8 +239,12 @@ namespace JIndexer
 
                 //menuItems.Add(new MenuItem("Clear Tags"));
                 //menuItems.Add(new MenuItem("Add Tags"));
-                menuItems.Add(mnuFavorite);
                 menuItems.Add(mnuNotFavorite);
+                menuItems.Add(mnu1star);
+                menuItems.Add(mnu2star);
+                menuItems.Add(mnu3star);
+                menuItems.Add(mnu4star);
+                menuItems.Add(mnuFavorite);
                 menuItems.Add(mnuWorks);
                 menuItems.Add(mnuDoesntWork);
                 menuItems.Add(mnuDelete);
@@ -277,6 +308,68 @@ namespace JIndexer
             }
             listView1.ContextMenu.Dispose();
         }
+
+        private void menuItemClick1star(object sender, EventArgs e)
+        {
+            var stars = 1;
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markStars(item.SubItems[2].Text, stars);
+                string starr = "";
+                for (int i = 0; i < stars; i++)
+                {
+                    starr += star;
+                }
+                item.SubItems[3].Text = starr;
+            }
+        }
+
+        private void menuItemClick2star(object sender, EventArgs e)
+        {
+            var stars = 2;
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markStars(item.SubItems[2].Text, stars);
+                string starr = "";
+                for (int i = 0; i < stars; i++)
+                {
+                    starr += star;
+                }
+                item.SubItems[3].Text = starr;
+            }
+        }
+
+        private void menuItemClick3star(object sender, EventArgs e)
+        {
+            var stars = 3;
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markStars(item.SubItems[2].Text, stars);
+                string starr = "";
+                for (int i = 0; i < stars; i++)
+                {
+                    starr += star;
+                }
+                item.SubItems[3].Text = starr;
+            }
+        }
+
+        private void menuItemClick4star(object sender, EventArgs e)
+        {
+            var stars = 4;
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.markStars(item.SubItems[2].Text, stars);
+                string starr = "";
+                for (int i = 0; i < stars; i++)
+                {
+                    starr += star;
+                }
+                item.SubItems[3].Text = starr;
+            }
+        }
+
+
 
         private void menuItemClickMakeNotFavorite(object sender, EventArgs e)
         {
@@ -384,6 +477,18 @@ namespace JIndexer
        
         private void textBox1_DelayedTextChanged(object sender, EventArgs e)
         {
+            if (textBox1.Text.Length > 2)
+            {
+                DbHelper.setSetting("searchterm", textBox1.Text);
+            }
+            else if (textBox1.Text.Length == 0)
+            {
+                DbHelper.setSetting("searchterm", "");
+            }
+            else
+            {
+                return; //do not 
+            }
             clearAndLoadTable();
         }
 
@@ -466,6 +571,8 @@ namespace JIndexer
 
         private void cbShowFavoritesOnly_CheckedChanged(object sender, EventArgs e)
         {
+            string value = (cbShowFavoritesOnly.Checked) ? "T" : "F";
+            DbHelper.setSetting("showstarredonly", value);
             clearAndLoadTable();
         }
     }

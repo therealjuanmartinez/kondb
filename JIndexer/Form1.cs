@@ -462,15 +462,31 @@ namespace JIndexer
             if (!dragFromInside)
             {
                 String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
+                string fileName = null;
                 foreach (string fileOrDir in files)
                 {
-
-                    considerItemForGrid(fileOrDir);
+                    fileName = considerItemForGrid(fileOrDir);
+                }
+                clearAndLoadTable();
+                if (fileName != null)
+                {
+                    try
+                    {
+                        listView1.EnsureVisible(listView1.Items.IndexOfKey(fileName));
+                    }
+                    catch (Exception) {
+                        //probably added while a filter was applied
+                    }
                 }
             }
         }
 
-        private void considerItemForGrid(string fileOrDirectory)
+        /// <summary>
+        /// Adds items to grid
+        /// </summary>
+        /// <param name="fileOrDirectory"></param>
+        /// <returns>last filename added</returns>
+        private string considerItemForGrid(string fileOrDirectory)
         {
             FileAttributes attr = File.GetAttributes(fileOrDirectory);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
@@ -502,10 +518,10 @@ namespace JIndexer
                     {
                         addToGridAndDb(fileOrDirectory, 0);
                     }
-                    return;
+                    return fileOrDirectory;
                 }
             }
-
+            return null;
         }
 
         private void listView1_DragEnter(object sender, DragEventArgs e)

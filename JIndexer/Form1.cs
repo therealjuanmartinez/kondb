@@ -459,6 +459,8 @@ namespace JIndexer
 
         private void listView1_DragDrop(object sender, DragEventArgs e)
         {
+            var now = DateTime.Now.Ticks;
+
             if (!dragFromInside)
             {
                 String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
@@ -479,6 +481,13 @@ namespace JIndexer
                     }
                 }
             }
+
+            var nownow = DateTime.Now.Ticks;
+
+            long elapsed = nownow - now;
+            //MessageBox.Show("Elapsed: " + elapsed);
+            //old way, ~6-7 seconds
+            //new way, like 5 seconds.... but WAY quicker when records already present
         }
 
         /// <summary>
@@ -514,7 +523,8 @@ namespace JIndexer
                // Debug.Print(fileOrDirectory + "Its a file");
                 if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki")
                 {
-                    if (DbHelper.IsNotInDatabase(fileOrDirectory)) //just file, this varible name sucks
+                    //if (DbHelper.IsNotInDatabase(fileOrDirectory)) //just file, this varible name sucks
+                    if (true)
                     {
                         addToGridAndDb(fileOrDirectory, 0);
                     }

@@ -26,7 +26,7 @@ namespace JIndexer
 
                 string sql = "CREATE TABLE items (" +
                          " name TEXT " +
-                         ", file TEXT " +
+                         ", file TEXT PRIMARY KEY " +
                          ", stars TINYINT " +
                          ", tags TEXT " +
                          ", loadingFails TINYINT " +
@@ -140,7 +140,7 @@ namespace JIndexer
                 //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "insert into items (name, file, stars, tags, loadingFails, size) values (@name, @file, @stars, @tags, @loadingFails, @size);";
+                command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size) values (@name, @file, @stars, @tags, @loadingFails, @size);";
                 command.Parameters.AddWithValue("file", i.GetFile());
                 command.Parameters.AddWithValue("name", i.GetName());
                 command.Parameters.AddWithValue("stars", i.GetStars());

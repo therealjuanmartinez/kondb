@@ -68,6 +68,42 @@ namespace JIndexer
             m_dbConnection.Close();
         }
 
+        public static bool IsNotInDatabase(string file)
+        {
+            SQLiteConnection m_dbConnection;
+            m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+            m_dbConnection.Open();
+
+            int count = 0;
+
+            List<Instrument> instruments = new List<Instrument>();
+            using (SQLiteCommand fmd = m_dbConnection.CreateCommand())
+            {
+                fmd.CommandText = @"SELECT count(*) as cnt FROM items ";
+                fmd.CommandText += " where file = '@val' ";
+                fmd.Parameters.AddWithValue("@val", file);
+                fmd.CommandText += ";";
+
+                string query = "";
+                foreach (SQLiteParameter p in fmd.Parameters)
+                {
+                    query = fmd.CommandText.Replace(p.ParameterName, p.Value.ToString());
+                }
+
+                //Todo find a way to do this without creating that 'query' thing
+                fmd.CommandText = query;
+                fmd.CommandType = CommandType.Text;
+                SQLiteDataReader r = fmd.ExecuteReader();
+                while (r.Read())
+                {
+                    count = Convert.ToInt32(r["cnt"]);
+                }
+            }
+
+            m_dbConnection.Close();
+            return count == 0;
+        }
+
         public static List<Instrument> GetInstruments(string searchPattern = "")
         {
             SQLiteConnection m_dbConnection;

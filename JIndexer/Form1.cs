@@ -375,7 +375,10 @@ namespace JIndexer
                // Debug.Print(fileOrDirectory + "Its a file");
                 if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki")
                 {
-                    addToGridAndDb(fileOrDirectory, 0);
+                    if (DbHelper.IsNotInDatabase(fileOrDirectory)) //just file, this varible name sucks
+                    {
+                        addToGridAndDb(fileOrDirectory, 0);
+                    }
                     return;
                 }
             }

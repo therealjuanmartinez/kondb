@@ -34,8 +34,12 @@ namespace JIndexer
             textBox1.DelayedTextChanged += textBox1_DelayedTextChanged; //having this all the way down here hopefully will defeat the delay
 
             cbShowWorking.CheckedChanged -= cbShowWorking_CheckedChanged;
-            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
+            cbShowWorking.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
             cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
+
+            cbShowMultisOnly.CheckedChanged -= cbShowMultisOnly_CheckedChanged;
+            cbShowMultisOnly.Checked = (DbHelper.getSetting("showmultisonly") == "T") ? true : false;
+            cbShowMultisOnly.CheckedChanged += cbShowMultisOnly_CheckedChanged;
 
             /*
             cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
@@ -82,6 +86,10 @@ namespace JIndexer
             }
         }
 
+        Color workingInstColor = Color.White;
+        Color workingMultiColor = Color.Yellow;
+        Color nonWorkingInstColor = Color.DimGray;
+        Color nonWorkingMultiColor = Color.DarkOrange;
 
         private void addToGrid(Instrument i)
         {
@@ -97,8 +105,27 @@ namespace JIndexer
             listViewItem.Name = i.GetFile(); //accessed by 'key' later when removing
             if (i.GetLoadingFails())
             {
-                listViewItem.ForeColor = Color.DimGray;
+                if (!i.isNkmFile())
+                {
+                    listViewItem.ForeColor = nonWorkingInstColor;
+                }
+                else
+                {
+                    listViewItem.ForeColor = nonWorkingMultiColor;
+                }
             }
+            else
+            {
+                if (!i.isNkmFile())
+                {
+                    listViewItem.ForeColor = workingInstColor;
+                }
+                else
+                {
+                    listViewItem.ForeColor = workingMultiColor;
+                }
+            }
+
             listView1.Items.Add(listViewItem);
         }
 
@@ -317,10 +344,19 @@ namespace JIndexer
         {
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markDoesntWork(item.SubItems[2].Text);
+                var fileName = item.SubItems[2].Text;
+                DbHelper.markDoesntWork(fileName);
                 if (cbShowNonWorking.Checked)
                 {
-                    item.ForeColor = Color.DimGray;
+                    if (fileName.ToLower().EndsWith("nki"))
+                    {
+                        item.ForeColor = nonWorkingInstColor;
+                    }
+                    else if (fileName.ToLower().EndsWith("nkm"))
+                    {
+                        item.ForeColor = nonWorkingMultiColor;
+                    }
+
                 }
                 else
                 {
@@ -471,7 +507,7 @@ namespace JIndexer
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 DbHelper.markWorks(item.SubItems[2].Text);
-                item.ForeColor = Color.White;
+                item.ForeColor = workingInstColor;
             }
         }
 
@@ -604,7 +640,9 @@ namespace JIndexer
             else
             {
                 // Debug.Print(fileOrDirectory + "Its a file");
-                if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki")
+                if (Path.GetExtension(fileOrDirectory).ToLower() == ".nki" ||
+                    Path.GetExtension(fileOrDirectory).ToLower() == ".nkm" 
+                    )
                 {
                     //if (DbHelper.IsNotInDatabase(fileOrDirectory)) //just file, this varible name sucks
                     if (true)
@@ -660,7 +698,7 @@ namespace JIndexer
             if (textBox1.Text.Length > 0)
                 searchTerm = textBox1.Text;
 
-            instruments = DbHelper.GetInstruments(searchTerm, cbShowFavoritesOnly.Checked, cbShowWorking.Checked, cbShowMissing.Checked);
+            instruments = DbHelper.GetInstruments(searchTerm, cbShowFavoritesOnly.Checked, cbShowWorking.Checked, cbShowMissing.Checked, cbHideMissing.Checked, cbShowMultisOnly.Checked);
 
             if (instruments.Count > 1000)
             {
@@ -763,7 +801,7 @@ namespace JIndexer
                 }
                 else if (fi.Exists && item.ForeColor == Color.DarkRed)
                 {
-                    item.ForeColor = Color.White;
+                    item.ForeColor = workingInstColor;
                     DbHelper.markMissingFile(item.SubItems[2].Text, false);
                 }
             }
@@ -781,6 +819,13 @@ namespace JIndexer
         {
             string value = (cbShowMissing.Checked) ? "T" : "F";
             DbHelper.setSetting("hidemissing", value);
+            clearAndLoadTable();
+        }
+
+        private void cbShowMultisOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            string value = (cbShowMissing.Checked) ? "T" : "F";
+            DbHelper.setSetting("showmultisonly", value);
             clearAndLoadTable();
         }
     }

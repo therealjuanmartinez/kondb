@@ -15,6 +15,7 @@ namespace JIndexer
         private string tags;
         private long size;
         private int loadingFails;
+        private bool isNkm;
 
 
         public Instrument(string name, string file, int stars, string tags, long size, int loadingFails)
@@ -25,12 +26,19 @@ namespace JIndexer
             this.tags = tags;
             this.size = size;
             this.loadingFails = loadingFails;
+            this.isNkm = file.ToLower().EndsWith("nkm");
         }
 
         public string GetName()
         {
             return name;
         }
+
+        public bool isNkmFile()
+        {
+            return isNkm;
+        }
+
 
         public bool GetLoadingFails()
         {

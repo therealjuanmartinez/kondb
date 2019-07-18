@@ -99,6 +99,7 @@ namespace JIndexer
                          ", tags TEXT " +
                          ", loadingFails TINYINT " +
                          ", fileExists TINYINT " + 
+                         ", isNkm TINYINT " + 
                          ", size INT );" +
                          "" +
                          "" +
@@ -227,8 +228,12 @@ namespace JIndexer
             //string sql = 
             //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
+
+            var isNkm = i.isNkmFile() ? "1" : "0";
+       
+
             SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-            command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size, fileExists) values (@name, @file, @stars, @tags, @loadingFails, @size, 1);";
+            command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size, fileExists, isNkm) values (@name, @file, @stars, @tags, @loadingFails, @size, 1, "+ isNkm +");";
             command.Parameters.AddWithValue("file", i.GetFile());
             command.Parameters.AddWithValue("name", i.GetName());
             command.Parameters.AddWithValue("stars", i.GetStars());
@@ -464,7 +469,7 @@ namespace JIndexer
             return count == 0;
         }
 
-        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true, bool missingOnly = false, bool hideMissing = false)
+        public static List<Instrument> GetInstruments(string searchPattern = "", bool favoritesOnly = false, bool showWorking = true, bool missingOnly = false, bool hideMissing = false, bool showMultisOnly = false)
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
 
@@ -564,6 +569,18 @@ namespace JIndexer
                     }
                 }
 
+                if (showMultisOnly)
+                {
+                    if (hasWhere)
+                    {
+                        fmd.CommandText += " and isNkm == 1 ";
+                    }
+                    else
+                    {
+                        fmd.CommandText += " where isNkm == 1 ";
+                        hasWhere = true;
+                    }
+                }
 
 
                 fmd.CommandText += ";";

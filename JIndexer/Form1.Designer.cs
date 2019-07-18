@@ -32,14 +32,15 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbHideMissing = new System.Windows.Forms.CheckBox();
+            this.cbShowMissing = new System.Windows.Forms.CheckBox();
             this.cbShowWorking = new System.Windows.Forms.CheckBox();
             this.cbShowFavoritesOnly = new System.Windows.Forms.CheckBox();
             this.lblStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbShowNonWorking = new System.Windows.Forms.CheckBox();
-            this.cbShowMissing = new System.Windows.Forms.CheckBox();
             this.textBox1 = new JIndexer.MyTextBox();
-            this.cbHideMissing = new System.Windows.Forms.CheckBox();
+            this.cbShowMultisOnly = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -54,9 +55,9 @@
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(4, 185);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(2132, 895);
+            this.listView1.Size = new System.Drawing.Size(2406, 895);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -75,12 +76,12 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 181F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.28783F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(2140, 1084);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(2414, 1084);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // groupBox1
@@ -88,6 +89,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.cbShowMultisOnly);
             this.groupBox1.Controls.Add(this.cbHideMissing);
             this.groupBox1.Controls.Add(this.cbShowMissing);
             this.groupBox1.Controls.Add(this.cbShowWorking);
@@ -97,12 +99,34 @@
             this.groupBox1.Controls.Add(this.cbShowNonWorking);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox1.Size = new System.Drawing.Size(2132, 173);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(2406, 173);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // cbHideMissing
+            // 
+            this.cbHideMissing.AutoSize = true;
+            this.cbHideMissing.Location = new System.Drawing.Point(1817, 71);
+            this.cbHideMissing.Name = "cbHideMissing";
+            this.cbHideMissing.Size = new System.Drawing.Size(185, 33);
+            this.cbHideMissing.TabIndex = 7;
+            this.cbHideMissing.Text = "Hide Missing";
+            this.cbHideMissing.UseVisualStyleBackColor = true;
+            this.cbHideMissing.CheckedChanged += new System.EventHandler(this.cbHideMissing_CheckedChanged);
+            // 
+            // cbShowMissing
+            // 
+            this.cbShowMissing.AutoSize = true;
+            this.cbShowMissing.Location = new System.Drawing.Point(1531, 71);
+            this.cbShowMissing.Name = "cbShowMissing";
+            this.cbShowMissing.Size = new System.Drawing.Size(250, 33);
+            this.cbShowMissing.TabIndex = 6;
+            this.cbShowMissing.Text = "Show Missing Only";
+            this.cbShowMissing.UseVisualStyleBackColor = true;
+            this.cbShowMissing.CheckedChanged += new System.EventHandler(this.cbShowMissing_CheckedChanged);
             // 
             // cbShowWorking
             // 
@@ -110,7 +134,7 @@
             this.cbShowWorking.Checked = true;
             this.cbShowWorking.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbShowWorking.Location = new System.Drawing.Point(976, 71);
-            this.cbShowWorking.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbShowWorking.Margin = new System.Windows.Forms.Padding(5);
             this.cbShowWorking.Name = "cbShowWorking";
             this.cbShowWorking.Size = new System.Drawing.Size(201, 33);
             this.cbShowWorking.TabIndex = 5;
@@ -122,7 +146,7 @@
             // 
             this.cbShowFavoritesOnly.AutoSize = true;
             this.cbShowFavoritesOnly.Location = new System.Drawing.Point(1236, 71);
-            this.cbShowFavoritesOnly.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.cbShowFavoritesOnly.Margin = new System.Windows.Forms.Padding(5);
             this.cbShowFavoritesOnly.Name = "cbShowFavoritesOnly";
             this.cbShowFavoritesOnly.Size = new System.Drawing.Size(246, 33);
             this.cbShowFavoritesOnly.TabIndex = 4;
@@ -154,24 +178,13 @@
             // 
             this.cbShowNonWorking.AutoSize = true;
             this.cbShowNonWorking.Location = new System.Drawing.Point(667, 71);
-            this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowNonWorking.Name = "cbShowNonWorking";
             this.cbShowNonWorking.Size = new System.Drawing.Size(254, 33);
             this.cbShowNonWorking.TabIndex = 1;
             this.cbShowNonWorking.Text = "Show Non-Working";
             this.cbShowNonWorking.UseVisualStyleBackColor = true;
             this.cbShowNonWorking.CheckedChanged += new System.EventHandler(this.cbShowNonWorking_CheckedChanged);
-            // 
-            // cbShowMissing
-            // 
-            this.cbShowMissing.AutoSize = true;
-            this.cbShowMissing.Location = new System.Drawing.Point(1531, 71);
-            this.cbShowMissing.Name = "cbShowMissing";
-            this.cbShowMissing.Size = new System.Drawing.Size(250, 33);
-            this.cbShowMissing.TabIndex = 6;
-            this.cbShowMissing.Text = "Show Missing Only";
-            this.cbShowMissing.UseVisualStyleBackColor = true;
-            this.cbShowMissing.CheckedChanged += new System.EventHandler(this.cbShowMissing_CheckedChanged);
             // 
             // textBox1
             // 
@@ -183,27 +196,27 @@
             this.textBox1.TabIndex = 0;
             this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
             // 
-            // cbHideMissing
+            // cbShowMultisOnly
             // 
-            this.cbHideMissing.AutoSize = true;
-            this.cbHideMissing.Location = new System.Drawing.Point(1817, 71);
-            this.cbHideMissing.Name = "cbHideMissing";
-            this.cbHideMissing.Size = new System.Drawing.Size(185, 33);
-            this.cbHideMissing.TabIndex = 7;
-            this.cbHideMissing.Text = "Hide Missing";
-            this.cbHideMissing.UseVisualStyleBackColor = true;
-            this.cbHideMissing.CheckedChanged += new System.EventHandler(this.cbHideMissing_CheckedChanged);
+            this.cbShowMultisOnly.AutoSize = true;
+            this.cbShowMultisOnly.Location = new System.Drawing.Point(2042, 71);
+            this.cbShowMultisOnly.Name = "cbShowMultisOnly";
+            this.cbShowMultisOnly.Size = new System.Drawing.Size(230, 33);
+            this.cbShowMultisOnly.TabIndex = 8;
+            this.cbShowMultisOnly.Text = "Show Multis Only";
+            this.cbShowMultisOnly.UseVisualStyleBackColor = true;
+            this.cbShowMultisOnly.CheckedChanged += new System.EventHandler(this.cbShowMultisOnly_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 29F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.ClientSize = new System.Drawing.Size(2140, 1084);
+            this.ClientSize = new System.Drawing.Size(2414, 1084);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "JIndexer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -229,6 +242,7 @@
         private System.Windows.Forms.CheckBox cbShowWorking;
         private System.Windows.Forms.CheckBox cbShowMissing;
         private System.Windows.Forms.CheckBox cbHideMissing;
+        private System.Windows.Forms.CheckBox cbShowMultisOnly;
     }
 }
 

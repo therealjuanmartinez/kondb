@@ -706,7 +706,7 @@ namespace JIndexer
             updateTextBoxWithItemCountWithLoadingMessage(instruments.Count);
             textBox1.Refresh();
 
-            System.Threading.Thread.Sleep(3000);
+            //System.Threading.Thread.Sleep(3000); //testing UI refresh
 
             foreach (var i in instruments)
             {

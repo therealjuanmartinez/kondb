@@ -32,6 +32,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbShowMultisOnly = new System.Windows.Forms.CheckBox();
             this.cbHideMissing = new System.Windows.Forms.CheckBox();
             this.cbShowMissing = new System.Windows.Forms.CheckBox();
             this.cbShowWorking = new System.Windows.Forms.CheckBox();
@@ -39,7 +40,6 @@
             this.lblStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbShowNonWorking = new System.Windows.Forms.CheckBox();
-            this.cbShowMultisOnly = new System.Windows.Forms.CheckBox();
             this.textBox1 = new JIndexer.MyTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -89,6 +89,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.groupBox1.Controls.Add(this.cbShowMultisOnly);
             this.groupBox1.Controls.Add(this.cbHideMissing);
             this.groupBox1.Controls.Add(this.cbShowMissing);
@@ -106,10 +107,23 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
+            // cbShowMultisOnly
+            // 
+            this.cbShowMultisOnly.AutoSize = true;
+            this.cbShowMultisOnly.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.cbShowMultisOnly.Location = new System.Drawing.Point(2121, 77);
+            this.cbShowMultisOnly.Name = "cbShowMultisOnly";
+            this.cbShowMultisOnly.Size = new System.Drawing.Size(230, 33);
+            this.cbShowMultisOnly.TabIndex = 8;
+            this.cbShowMultisOnly.Text = "Show Multis Only";
+            this.cbShowMultisOnly.UseVisualStyleBackColor = true;
+            this.cbShowMultisOnly.CheckedChanged += new System.EventHandler(this.cbShowMultisOnly_CheckedChanged);
+            // 
             // cbHideMissing
             // 
             this.cbHideMissing.AutoSize = true;
-            this.cbHideMissing.Location = new System.Drawing.Point(1817, 71);
+            this.cbHideMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.cbHideMissing.Location = new System.Drawing.Point(1896, 77);
             this.cbHideMissing.Name = "cbHideMissing";
             this.cbHideMissing.Size = new System.Drawing.Size(185, 33);
             this.cbHideMissing.TabIndex = 7;
@@ -120,7 +134,8 @@
             // cbShowMissing
             // 
             this.cbShowMissing.AutoSize = true;
-            this.cbShowMissing.Location = new System.Drawing.Point(1531, 71);
+            this.cbShowMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.cbShowMissing.Location = new System.Drawing.Point(1610, 77);
             this.cbShowMissing.Name = "cbShowMissing";
             this.cbShowMissing.Size = new System.Drawing.Size(250, 33);
             this.cbShowMissing.TabIndex = 6;
@@ -133,7 +148,8 @@
             this.cbShowWorking.AutoSize = true;
             this.cbShowWorking.Checked = true;
             this.cbShowWorking.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbShowWorking.Location = new System.Drawing.Point(976, 71);
+            this.cbShowWorking.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.cbShowWorking.Location = new System.Drawing.Point(1055, 77);
             this.cbShowWorking.Margin = new System.Windows.Forms.Padding(5);
             this.cbShowWorking.Name = "cbShowWorking";
             this.cbShowWorking.Size = new System.Drawing.Size(201, 33);
@@ -145,7 +161,8 @@
             // cbShowFavoritesOnly
             // 
             this.cbShowFavoritesOnly.AutoSize = true;
-            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(1236, 71);
+            this.cbShowFavoritesOnly.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(1315, 77);
             this.cbShowFavoritesOnly.Margin = new System.Windows.Forms.Padding(5);
             this.cbShowFavoritesOnly.Name = "cbShowFavoritesOnly";
             this.cbShowFavoritesOnly.Size = new System.Drawing.Size(246, 33);
@@ -167,40 +184,34 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(80, 74);
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.Location = new System.Drawing.Point(42, 80);
             this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 29);
+            this.label1.Size = new System.Drawing.Size(184, 29);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Search:";
+            this.label1.Text = "Enter to Search:";
             // 
             // cbShowNonWorking
             // 
             this.cbShowNonWorking.AutoSize = true;
-            this.cbShowNonWorking.Location = new System.Drawing.Point(667, 71);
+            this.cbShowNonWorking.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.cbShowNonWorking.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.cbShowNonWorking.Location = new System.Drawing.Point(746, 77);
             this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowNonWorking.Name = "cbShowNonWorking";
             this.cbShowNonWorking.Size = new System.Drawing.Size(254, 33);
             this.cbShowNonWorking.TabIndex = 1;
             this.cbShowNonWorking.Text = "Show Non-Working";
-            this.cbShowNonWorking.UseVisualStyleBackColor = true;
+            this.cbShowNonWorking.UseVisualStyleBackColor = false;
             this.cbShowNonWorking.CheckedChanged += new System.EventHandler(this.cbShowNonWorking_CheckedChanged);
-            // 
-            // cbShowMultisOnly
-            // 
-            this.cbShowMultisOnly.AutoSize = true;
-            this.cbShowMultisOnly.Location = new System.Drawing.Point(2042, 71);
-            this.cbShowMultisOnly.Name = "cbShowMultisOnly";
-            this.cbShowMultisOnly.Size = new System.Drawing.Size(230, 33);
-            this.cbShowMultisOnly.TabIndex = 8;
-            this.cbShowMultisOnly.Text = "Show Multis Only";
-            this.cbShowMultisOnly.UseVisualStyleBackColor = true;
-            this.cbShowMultisOnly.CheckedChanged += new System.EventHandler(this.cbShowMultisOnly_CheckedChanged);
             // 
             // textBox1
             // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.WindowText;
             this.textBox1.DelayedTextChangedTimeout = 250;
-            this.textBox1.Location = new System.Drawing.Point(186, 71);
+            this.textBox1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.textBox1.Location = new System.Drawing.Point(242, 76);
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(443, 35);

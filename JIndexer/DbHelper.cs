@@ -602,6 +602,7 @@ namespace JIndexer
                         );
                     instruments.Add(i);
                 }
+
             }
             return instruments;
         }

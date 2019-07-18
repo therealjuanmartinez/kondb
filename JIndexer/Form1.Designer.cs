@@ -39,8 +39,8 @@
             this.lblStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbShowNonWorking = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new JIndexer.MyTextBox();
             this.cbShowMultisOnly = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new JIndexer.MyTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -186,16 +186,6 @@
             this.cbShowNonWorking.UseVisualStyleBackColor = true;
             this.cbShowNonWorking.CheckedChanged += new System.EventHandler(this.cbShowNonWorking_CheckedChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.DelayedTextChangedTimeout = 250;
-            this.textBox1.Location = new System.Drawing.Point(186, 71);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(443, 35);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
-            // 
             // cbShowMultisOnly
             // 
             this.cbShowMultisOnly.AutoSize = true;
@@ -206,6 +196,17 @@
             this.cbShowMultisOnly.Text = "Show Multis Only";
             this.cbShowMultisOnly.UseVisualStyleBackColor = true;
             this.cbShowMultisOnly.CheckedChanged += new System.EventHandler(this.cbShowMultisOnly_CheckedChanged);
+            // 
+            // textBox1
+            // 
+            this.textBox1.DelayedTextChangedTimeout = 250;
+            this.textBox1.Location = new System.Drawing.Point(186, 71);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(443, 35);
+            this.textBox1.TabIndex = 0;
+            this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // Form1
             // 

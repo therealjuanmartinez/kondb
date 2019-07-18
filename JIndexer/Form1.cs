@@ -415,6 +415,16 @@ namespace JIndexer
             lblStatus.Text = listView1.Items.Count + " Items";
         }
 
+        private void updateTextBoxWithItemCountWithLoadingMessage(int count)
+        {
+
+            this.lblStatus.Invoke((MethodInvoker)delegate
+            {
+                lblStatus.Text = "Loading " + count + " Items ...";
+                // Running on the UI thread
+            });
+        }
+
         private List<Instrument> GetSelectedInstruments()
         {
             List<Instrument> instruments = new List<Instrument>();
@@ -670,19 +680,7 @@ namespace JIndexer
 
         private void textBox1_DelayedTextChanged(object sender, EventArgs e)
         {
-            if (textBox1.Text.Length > 2)
-            {
-                DbHelper.setSetting("searchterm", textBox1.Text);
-            }
-            else if (textBox1.Text.Length == 0)
-            {
-                DbHelper.setSetting("searchterm", "");
-            }
-            else
-            {
-                return; //do not 
-            }
-            clearAndLoadTable();
+            //Decided to move any functionality to a press of the Enter key which is much less problematic
         }
 
 
@@ -705,6 +703,10 @@ namespace JIndexer
                 listView1.Sorting = SortOrder.None;
                 listView1.ListViewItemSorter = null;
             }
+            updateTextBoxWithItemCountWithLoadingMessage(instruments.Count);
+            textBox1.Refresh();
+
+            System.Threading.Thread.Sleep(3000);
 
             foreach (var i in instruments)
             {
@@ -716,7 +718,7 @@ namespace JIndexer
             checkForMissingFiles();
         }
 
-        private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)
+         private void cbShowNonWorking_CheckedChanged(object sender, EventArgs e)
         {
             clearAndLoadTable();
         }
@@ -827,6 +829,27 @@ namespace JIndexer
             string value = (cbShowMissing.Checked) ? "T" : "F";
             DbHelper.setSetting("showmultisonly", value);
             clearAndLoadTable();
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                /*
+                if (textBox1.Text.Length > 2)
+                {*/
+                    DbHelper.setSetting("searchterm", textBox1.Text);
+                /*}
+                else if (textBox1.Text.Length == 0)
+                {
+                    DbHelper.setSetting("searchterm", "");
+                }
+                else
+                {
+                    return; //do not 
+                }*/
+                clearAndLoadTable();
+            }
         }
     }
 }

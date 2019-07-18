@@ -214,9 +214,9 @@ namespace JIndexer
         }
 
 
-      
+
         //public static void insertRec(List<Instrument> instruments)
-        public static void insertRec(Instrument i)
+        public static bool insertRec(Instrument i)
         {
             SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
 
@@ -224,25 +224,24 @@ namespace JIndexer
             //m_dbConnection.Open();
 
             //foreach (Instrument i in instruments)
-            if (true)
-            {
-                //string sql = 
-                //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            //string sql = 
+            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
-                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size, fileExists) values (@name, @file, @stars, @tags, @loadingFails, @size, 1);";
-                command.Parameters.AddWithValue("file", i.GetFile());
-                command.Parameters.AddWithValue("name", i.GetName());
-                command.Parameters.AddWithValue("stars", i.GetStars());
-                command.Parameters.AddWithValue("tags", i.GetTags());
-                command.Parameters.AddWithValue("loadingFails", i.GetLoadingFails());
-                command.Parameters.AddWithValue("size", i.GetSize());
+            SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+            command.CommandText = "insert OR IGNORE into items (name, file, stars, tags, loadingFails, size, fileExists) values (@name, @file, @stars, @tags, @loadingFails, @size, 1);";
+            command.Parameters.AddWithValue("file", i.GetFile());
+            command.Parameters.AddWithValue("name", i.GetName());
+            command.Parameters.AddWithValue("stars", i.GetStars());
+            command.Parameters.AddWithValue("tags", i.GetTags());
+            command.Parameters.AddWithValue("loadingFails", i.GetLoadingFails());
+            command.Parameters.AddWithValue("size", i.GetSize());
 
-                command.ExecuteNonQuery();
-            }
+            int rowsAffected = command.ExecuteNonQuery();
+            return rowsAffected > 0;
 
-           // m_dbConnection.Close();
+            // m_dbConnection.Close();
         }
+
 
 
 

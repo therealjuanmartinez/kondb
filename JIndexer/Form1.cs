@@ -76,7 +76,10 @@ namespace JIndexer
         {
             var fi = new FileInfo(file);
             var inst = new Instrument(Path.GetFileNameWithoutExtension(file), file, 0, "", fi.Length, 0);
-            DbHelper.insertRec(inst);
+            if (DbHelper.insertRec(inst))
+            {
+                addToGrid(inst);
+            }
         }
 
 
@@ -543,7 +546,7 @@ namespace JIndexer
                 }
                 DbHelper.optionalEndTransactionForSpeed();
 
-                clearAndLoadTable();
+                //clearAndLoadTable();
                 if (fileName != null)
                 {
                     try
@@ -565,6 +568,9 @@ namespace JIndexer
             //new way, like 5 seconds.... but WAY quicker when records already present
             //with persistent DB connection, like 2 seconds
             //with transactions, ho boy
+
+
+            updateTextBoxWithItemCount();
         }
 
         /// <summary>
@@ -641,11 +647,14 @@ namespace JIndexer
             clearAndLoadTable();
         }
 
+
+        List<Instrument> instruments;
+
         private void clearAndLoadTable()
         {
             listView1.Items.Clear();
 
-            List<Instrument> instruments = new List<Instrument>();
+            instruments = new List<Instrument>();
 
             var searchTerm = "";
             if (textBox1.Text.Length > 0)

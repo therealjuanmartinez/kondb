@@ -174,7 +174,7 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(187, 126);
+            this.lblStatus.Location = new System.Drawing.Point(241, 126);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(31, 29);
@@ -185,7 +185,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label1.Location = new System.Drawing.Point(42, 80);
+            this.label1.Location = new System.Drawing.Point(42, 76);
             this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(184, 29);
@@ -211,7 +211,7 @@
             this.textBox1.BackColor = System.Drawing.SystemColors.WindowText;
             this.textBox1.DelayedTextChangedTimeout = 250;
             this.textBox1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.textBox1.Location = new System.Drawing.Point(242, 76);
+            this.textBox1.Location = new System.Drawing.Point(242, 75);
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(443, 35);

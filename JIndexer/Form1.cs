@@ -20,15 +20,18 @@ namespace JIndexer
         Color nonWorkingInstColor = Color.DimGray;
         Color nonWorkingMultiColor = Color.DarkOrange;
 
+        const int fileNameGridIndex = 3;
+        const int starGridIndex = 3;
+
 
         public Form1()
         {
             InitializeComponent();
 
+            listView1.Columns.Add("Stars");
             listView1.Columns.Add("Title");
             listView1.Columns.Add("Tags");
             listView1.Columns.Add("Path");
-            listView1.Columns.Add("Stars");
 
             DbHelper.createDbIfNotExists();
 
@@ -99,8 +102,8 @@ namespace JIndexer
                 starr += star;
             }
 
-            string[] row = { i.GetName(), i.GetTags(),
-                               i.GetFile(), starr };
+            string[] row = {starr, i.GetName(), i.GetTags(),
+                               i.GetFile()};
             var listViewItem = new ListViewItem(row);
             listViewItem.Name = i.GetFile(); //accessed by 'key' later when removing
             if (i.GetLoadingFails())
@@ -145,11 +148,11 @@ namespace JIndexer
             {
                 //lv.Columns[lv.Columns.Count - 1].Width = -2;
 
-                int x = lv.Width / 6 == 0 ? 1 : lv.Width / 6;
-                lv.Columns[0].Width = x * 1;
-                lv.Columns[1].Width = x * 1;
-                lv.Columns[2].Width = x * 2;
-                lv.Columns[3].Width = x;
+                int x = lv.Width / 12 == 0 ? 1 : lv.Width / 12;
+                lv.Columns[0].Width = x;
+                lv.Columns[1].Width = x * 3;
+                lv.Columns[2].Width = x * 1;
+                lv.Columns[3].Width = x * 7;
             }
 
             catch (Exception e)
@@ -245,7 +248,7 @@ namespace JIndexer
             {
                 int imgIndex = item.ImageIndex;
                 //selection.Add(filenames[imgIndex]);
-                selection.Add(item.SubItems[2].Text);
+                selection.Add(item.SubItems[fileNameGridIndex].Text);
             }
 
             DataObject data = new DataObject(DataFormats.FileDrop, selection.ToArray());
@@ -315,7 +318,7 @@ namespace JIndexer
                 bool pathMismatch = false;
                 foreach (ListViewItem lvi in listView1.SelectedItems)
                 {
-                    var temppath = Path.GetDirectoryName(lvi.SubItems[2].Text);
+                    var temppath = Path.GetDirectoryName(lvi.SubItems[fileNameGridIndex].Text);
                     if (path.Length > 1)
                     {
                         if (temppath != path)
@@ -324,7 +327,7 @@ namespace JIndexer
                             break;
                         }
                     }
-                    path = Path.GetDirectoryName(lvi.SubItems[2].Text);
+                    path = Path.GetDirectoryName(lvi.SubItems[fileNameGridIndex].Text);
                 }
 
                 if (!pathMismatch)
@@ -344,7 +347,7 @@ namespace JIndexer
         {
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                var fileName = item.SubItems[2].Text;
+                var fileName = item.SubItems[fileNameGridIndex].Text;
                 DbHelper.markDoesntWork(fileName);
                 if (cbShowNonWorking.Checked)
                 {
@@ -368,13 +371,13 @@ namespace JIndexer
         {
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markFavorite(item.SubItems[2].Text);
+                DbHelper.markFavorite(item.SubItems[fileNameGridIndex].Text);
                 string starr = "";
                 for (int i = 0; i < 5; i++)
                 {
                     starr += star;
                 }
-                item.SubItems[3].Text = starr;
+                item.SubItems[starGridIndex].Text = starr;
             }
             listView1.ContextMenu.Dispose();
         }
@@ -430,7 +433,7 @@ namespace JIndexer
             List<Instrument> instruments = new List<Instrument>();
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                var file = item.SubItems[2].Text;
+                var file = item.SubItems[fileNameGridIndex].Text;
                 FileInfo fi = new FileInfo(file);
                 Instrument i = new Instrument(
                         item.SubItems[0].Text,
@@ -446,13 +449,13 @@ namespace JIndexer
             var stars = 1;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markStars(item.SubItems[2].Text, stars);
+                DbHelper.markStars(item.SubItems[fileNameGridIndex].Text, stars);
                 string starr = "";
                 for (int i = 0; i < stars; i++)
                 {
                     starr += star;
                 }
-                item.SubItems[3].Text = starr;
+                item.SubItems[starGridIndex].Text = starr;
             }
         }
 
@@ -461,13 +464,13 @@ namespace JIndexer
             var stars = 2;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markStars(item.SubItems[2].Text, stars);
+                DbHelper.markStars(item.SubItems[fileNameGridIndex].Text, stars);
                 string starr = "";
                 for (int i = 0; i < stars; i++)
                 {
                     starr += star;
                 }
-                item.SubItems[3].Text = starr;
+                item.SubItems[starGridIndex].Text = starr;
             }
         }
 
@@ -476,13 +479,13 @@ namespace JIndexer
             var stars = 3;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markStars(item.SubItems[2].Text, stars);
+                DbHelper.markStars(item.SubItems[fileNameGridIndex].Text, stars);
                 string starr = "";
                 for (int i = 0; i < stars; i++)
                 {
                     starr += star;
                 }
-                item.SubItems[3].Text = starr;
+                item.SubItems[starGridIndex].Text = starr;
             }
         }
 
@@ -491,13 +494,13 @@ namespace JIndexer
             var stars = 4;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markStars(item.SubItems[2].Text, stars);
+                DbHelper.markStars(item.SubItems[fileNameGridIndex].Text, stars);
                 string starr = "";
                 for (int i = 0; i < stars; i++)
                 {
                     starr += star;
                 }
-                item.SubItems[3].Text = starr;
+                item.SubItems[starGridIndex].Text = starr;
             }
         }
 
@@ -507,8 +510,8 @@ namespace JIndexer
         {
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markFavorite(item.SubItems[2].Text, false);
-                item.SubItems[3].Text = "";
+                DbHelper.markFavorite(item.SubItems[fileNameGridIndex].Text, false);
+                item.SubItems[starGridIndex].Text = "";
             }
         }
 
@@ -516,7 +519,7 @@ namespace JIndexer
         {
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.markWorks(item.SubItems[2].Text);
+                DbHelper.markWorks(item.SubItems[fileNameGridIndex].Text);
                 item.ForeColor = workingInstColor;
             }
         }
@@ -529,7 +532,7 @@ namespace JIndexer
             var count = 0;
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                DbHelper.Delete(item.SubItems[2].Text);
+                DbHelper.Delete(item.SubItems[fileNameGridIndex].Text);
 
                 count++;
                 if (count == 1000)
@@ -560,7 +563,7 @@ namespace JIndexer
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 //var path = Path.GetDirectoryName(item.SubItems[2].Text);
-                var path = item.SubItems[2].Text;
+                var path = item.SubItems[fileNameGridIndex].Text;
                 string argument = "/select, \"" + path + "\"";
                 System.Diagnostics.Process.Start("explorer.exe", argument);
                 break;
@@ -795,16 +798,16 @@ namespace JIndexer
             DbHelper.optionalBeginTransactionForSpeed();
             foreach (ListViewItem item in listView1.Items)
             {
-                FileInfo fi = new FileInfo(item.SubItems[2].Text);
+                FileInfo fi = new FileInfo(item.SubItems[fileNameGridIndex].Text);
                 if (!fi.Exists)
                 {
                     item.ForeColor = Color.DarkRed;
-                    DbHelper.markMissingFile(item.SubItems[2].Text);
+                    DbHelper.markMissingFile(item.SubItems[fileNameGridIndex].Text);
                 }
                 else if (fi.Exists && item.ForeColor == Color.DarkRed)
                 {
                     item.ForeColor = workingInstColor;
-                    DbHelper.markMissingFile(item.SubItems[2].Text, false);
+                    DbHelper.markMissingFile(item.SubItems[fileNameGridIndex].Text, false);
                 }
             }
             DbHelper.optionalEndTransactionForSpeed();

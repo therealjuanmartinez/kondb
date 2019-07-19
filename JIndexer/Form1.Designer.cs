@@ -210,7 +210,7 @@
             this.textBox1.BackColor = System.Drawing.SystemColors.WindowText;
             this.textBox1.DelayedTextChangedTimeout = 250;
             this.textBox1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.textBox1.Location = new System.Drawing.Point(138, 41);
+            this.textBox1.Location = new System.Drawing.Point(138, 40);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(255, 22);

@@ -14,6 +14,13 @@ namespace JIndexer
 {
     public partial class Form1 : Form
     {
+
+        Color workingInstColor = Color.White;
+        Color workingMultiColor = Color.Gold;
+        Color nonWorkingInstColor = Color.DimGray;
+        Color nonWorkingMultiColor = Color.DarkOrange;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -41,6 +48,7 @@ namespace JIndexer
             cbShowMultisOnly.Checked = (DbHelper.getSetting("showmultisonly") == "T") ? true : false;
             cbShowMultisOnly.CheckedChanged += cbShowMultisOnly_CheckedChanged;
 
+
             /*
             cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
             cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showmissingonly") == "T") ? true : false;
@@ -59,10 +67,6 @@ namespace JIndexer
             {
                 clearAndLoadTable();
             }*/
-
-
-
-
         }
 
         private bool FiltersApplied()
@@ -86,11 +90,7 @@ namespace JIndexer
             }
         }
 
-        Color workingInstColor = Color.White;
-        Color workingMultiColor = Color.Yellow;
-        Color nonWorkingInstColor = Color.DimGray;
-        Color nonWorkingMultiColor = Color.DarkOrange;
-
+       
         private void addToGrid(Instrument i)
         {
             string starr = "";
@@ -773,7 +773,7 @@ namespace JIndexer
 
         private void cbShowWorking_CheckedChanged(object sender, EventArgs e)
         {
-            string value = (cbShowFavoritesOnly.Checked) ? "T" : "F";
+            string value = (cbShowWorking.Checked) ? "T" : "F";
             DbHelper.setSetting("showworking", value);
             clearAndLoadTable();
         }
@@ -819,14 +819,14 @@ namespace JIndexer
 
         private void cbHideMissing_CheckedChanged(object sender, EventArgs e)
         {
-            string value = (cbShowMissing.Checked) ? "T" : "F";
+            string value = (cbHideMissing.Checked) ? "T" : "F";
             DbHelper.setSetting("hidemissing", value);
             clearAndLoadTable();
         }
 
         private void cbShowMultisOnly_CheckedChanged(object sender, EventArgs e)
         {
-            string value = (cbShowMissing.Checked) ? "T" : "F";
+            string value = (cbShowMultisOnly.Checked) ? "T" : "F";
             DbHelper.setSetting("showmultisonly", value);
             clearAndLoadTable();
         }

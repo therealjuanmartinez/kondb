@@ -21,7 +21,7 @@ namespace JIndexer
         Color nonWorkingMultiColor = Color.DarkOrange;
 
         const int fileNameGridIndex = 3;
-        const int starGridIndex = 3;
+        const int starGridIndex = 0;
 
 
         public Form1()

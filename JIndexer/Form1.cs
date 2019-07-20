@@ -22,7 +22,8 @@ namespace JIndexer
 
         const int fileNameGridIndex = 3;
         const int starGridIndex = 0;
-        const int tagIndex = 2;
+        const int tagGridIndex = 2;
+        const int nameGridIndex = 1;
 
 
         public Form1()
@@ -163,7 +164,7 @@ namespace JIndexer
                 {
                     foreach (ListViewItem item in listView1.SelectedItems)
                     {
-                        item.SubItems[tagIndex].Text = "";
+                        item.SubItems[tagGridIndex].Text = "";
                     }
                 }
                 AddTagsToSelected(tags);
@@ -178,7 +179,7 @@ namespace JIndexer
             foreach (ListViewItem item in listView1.SelectedItems)
             {
                 DbHelper.setTags(item.SubItems[fileNameGridIndex].Text, "");
-                item.SubItems[tagIndex].Text = "";
+                item.SubItems[tagGridIndex].Text = "";
             }
         }
    
@@ -190,7 +191,7 @@ namespace JIndexer
 
             foreach (ListViewItem item in listView1.SelectedItems)
             {
-                var tagString = item.SubItems[tagIndex].Text;
+                var tagString = item.SubItems[tagGridIndex].Text;
                 var presentTags = tagString.Split(' ');
                 foreach (var tag in tags)
                 {
@@ -208,7 +209,7 @@ namespace JIndexer
                 }
 
                 DbHelper.setTags(item.SubItems[fileNameGridIndex].Text, tagString);
-                item.SubItems[tagIndex].Text = tagString;
+                item.SubItems[tagGridIndex].Text = tagString;
             }
 
         }
@@ -537,7 +538,7 @@ namespace JIndexer
                 var file = item.SubItems[fileNameGridIndex].Text;
                 FileInfo fi = new FileInfo(file);
                 Instrument i = new Instrument(
-                        item.SubItems[0].Text,
+                        item.SubItems[nameGridIndex].Text,
                         file, 0, "", fi.Length, 0);
                 instruments.Add(i);
             }

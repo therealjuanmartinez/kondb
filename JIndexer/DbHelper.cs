@@ -325,7 +325,7 @@ namespace JIndexer
             if (true)
             {
                 SQLiteCommand command = new SQLiteCommand(m_dbConnection);
-                command.CommandText = "update items set loadingFails = 1 where file = @val ;"; //todo parameterize
+                command.CommandText = "update items set loadingFails = 1 where file = @val ;"; 
 
                 SQLiteParameter lookupValue = new SQLiteParameter("@val");
                 command.Parameters.Add(lookupValue);
@@ -333,8 +333,30 @@ namespace JIndexer
 
                 command.ExecuteNonQuery();
             }
-
         }
+
+
+        public static void setTags(string file, string tagString)
+        {
+            SQLiteConnection m_dbConnection = ConnSingleton.Instance.GetOpenConnection();
+
+            if (true)
+            {
+                SQLiteCommand command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = "update items set tags = @tags where file = @val ;"; 
+
+                SQLiteParameter lookupValue = new SQLiteParameter("@val");
+                command.Parameters.Add(lookupValue);
+                lookupValue.Value = file;
+
+                SQLiteParameter lookupValue2 = new SQLiteParameter("@tags");
+                command.Parameters.Add(lookupValue2);
+                lookupValue2.Value = tagString;
+
+                command.ExecuteNonQuery();
+            }
+        }
+
 
         public static void markMissingFile(string file, bool fileMissing = true)
         {

@@ -22,6 +22,7 @@ namespace JIndexer
 
         const int fileNameGridIndex = 3;
         const int starGridIndex = 0;
+        const int tagIndex = 2;
 
 
         public Form1()
@@ -70,6 +71,7 @@ namespace JIndexer
             {
                 clearAndLoadTable();
             }*/
+
         }
 
         private bool FiltersApplied()
@@ -92,6 +94,9 @@ namespace JIndexer
                 addToGrid(inst);
             }
         }
+
+
+
 
        
         private void addToGrid(Instrument i)
@@ -140,6 +145,77 @@ namespace JIndexer
             var item = lb.SelectedItem;
             MessageBox.Show(item.ToString());
         }
+
+
+        public void ShowTagsDialogBox(bool trueToAddOrFalseToReplace) //apologies for this naming
+        {
+            Form2 tagDialog = new Form2();
+
+            // Show tagDialog as a modal dialog and determine if DialogResult = OK.
+            if (tagDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                // Read the contents of tagDialog's TextBox.
+               var tags = tagDialog.textBox1.Text;
+
+                bool replaceTags = !trueToAddOrFalseToReplace;
+
+                if (replaceTags)
+                {
+                    foreach (ListViewItem item in listView1.SelectedItems)
+                    {
+                        item.SubItems[tagIndex].Text = "";
+                    }
+                }
+                AddTagsToSelected(tags);
+
+            }
+            tagDialog.Dispose();
+        }
+
+
+        public void ClearTagsFromSelected()
+        {
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                DbHelper.setTags(item.SubItems[fileNameGridIndex].Text, "");
+                item.SubItems[tagIndex].Text = "";
+            }
+        }
+   
+
+        public void AddTagsToSelected(string tagListString)
+        {
+            var tags = tagListString.Split(',');
+
+
+            foreach (ListViewItem item in listView1.SelectedItems)
+            {
+                var tagString = item.SubItems[tagIndex].Text;
+                var presentTags = tagString.Split(' ');
+                foreach (var tag in tags)
+                {
+                    if (!presentTags.Any(x => x.ToUpper() == tag.ToUpper()))
+                    {
+                        if (tagString.Length > 0)
+                        {
+                            tagString += " " + tag.Trim();
+                        }
+                        else
+                        {
+                            tagString = tag.Trim();
+                        }
+                    }
+                }
+
+                DbHelper.setTags(item.SubItems[fileNameGridIndex].Text, tagString);
+                item.SubItems[tagIndex].Text = tagString;
+            }
+
+        }
+
+
+
+
 
 
         private void SizeLastColumn(ListView lv)
@@ -276,6 +352,9 @@ namespace JIndexer
                 MenuItem mnu3star = new MenuItem("3 Stars");
                 MenuItem mnu4star = new MenuItem("4 Stars");
                 MenuItem mnuFavorite = new MenuItem("5 Stars");
+                MenuItem mnuAddTags = new MenuItem("Add Tag(s)");
+                MenuItem mnuReplaceTags = new MenuItem("Replace Tag(s)");
+                MenuItem mnuClearTags = new MenuItem("Clear Tag(s)");
                 MenuItem mnuDoesntWork = new MenuItem("Doesn't Work");
                 MenuItem mnuWorks = new MenuItem("Works");
                 MenuItem mnuDelete = new MenuItem("Delete from Index");
@@ -295,6 +374,10 @@ namespace JIndexer
                 mnuDedupBottom.Click += new EventHandler(menuItemDedupBottom);
                 mnuOpenFolder.Click += new EventHandler(menuItemOpenContainingFolder);
 
+                mnuAddTags.Click += new EventHandler(menuItemAddTags);
+                mnuReplaceTags.Click += new EventHandler(menuItemReplaceTags);
+                mnuClearTags.Click += new EventHandler(menuItemClearTags);
+
 
                 List<MenuItem> menuItems = new List<MenuItem>();
 
@@ -306,6 +389,10 @@ namespace JIndexer
                 menuItems.Add(mnu3star);
                 menuItems.Add(mnu4star);
                 menuItems.Add(mnuFavorite);
+                menuItems.Add(mnuAddTags);
+                menuItems.Add(mnuReplaceTags);
+                menuItems.Add(mnuClearTags);
+                menuItems.Add(mnuDoesntWork);
                 menuItems.Add(mnuWorks);
                 menuItems.Add(mnuDoesntWork);
                 menuItems.Add(mnuDedupTop);
@@ -342,6 +429,20 @@ namespace JIndexer
 
             }
         }
+        private void menuItemAddTags(object sender, EventArgs e)
+        {
+            ShowTagsDialogBox(true);
+        }
+        private void menuItemReplaceTags(object sender, EventArgs e)
+        {
+            ShowTagsDialogBox(false);
+        }
+
+        private void menuItemClearTags(object sender, EventArgs e)
+        {
+            ClearTagsFromSelected();
+        }
+
 
         private void menuItemClickDoesntWork(object sender, EventArgs e)
         {

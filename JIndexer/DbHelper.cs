@@ -511,30 +511,44 @@ namespace JIndexer
                     {
                         if (pattern.Trim().Length > 0)
                         {
+
+
                             var patternnn = pattern.Trim();
                             if (count > 0)
                             {
                                 fmd.CommandText += " and ";
                             }
-                            if (patternnn.ToCharArray()[0] != '-')
+
+                            var patternnnnn = patternnn.Split('|');
+
+                            var innerOrCount = 0;
+                            fmd.CommandText += "(";
+                            foreach (var p in patternnnnn)
                             {
-                                fmd.CommandText += " (upper(name) like @val" + count;
-                                fmd.CommandText += " or upper(tags) like @val" + count;
-                                fmd.CommandText += " or upper(file) like @val" + count;
+                                if (innerOrCount > 0)
+                                {
+                                    fmd.CommandText += " OR ";
+                                }
+
+                                fmd.CommandText += " (upper(name) like @val" + count + innerOrCount;
+                                fmd.CommandText += " or upper(tags) like @val" + count + innerOrCount;
+                                fmd.CommandText += " or upper(file) like @val" + count + innerOrCount;
                                 fmd.CommandText += ")";
+
+                                SQLiteParameter lookupValue = new SQLiteParameter("@val" + count + innerOrCount);
+                                fmd.Parameters.Add(lookupValue);
+                                if (p.ToCharArray()[0] != '-')
+                                {
+                                    lookupValue.Value = "%" + p.ToUpper().Trim() + "%";
+                                }
+                                else
+                                {
+                                    lookupValue.Value = "%" + p.ToUpper().Trim().Substring(1,p.Length - 1) + "%";
+                                }
+                                innerOrCount++;
                             }
-                            else
-                            {
-                                patternnn = patternnn.Remove(0, 1).Trim();
-                                fmd.CommandText += " (upper(name) not like @val" + count;
-                                fmd.CommandText += " and upper(tags) not like @val" + count;
-                                fmd.CommandText += " and upper(file) not like @val" + count;
-                                fmd.CommandText += ")";
-                            }
+                            fmd.CommandText += ")";
                             //                        fmd.Parameters.AddWithValue("@val", searchPattern.ToUpper().Trim());
-                            SQLiteParameter lookupValue = new SQLiteParameter("@val" + count);
-                            fmd.Parameters.Add(lookupValue);
-                            lookupValue.Value = "%" + patternnn.ToUpper().Trim() + "%";
 
                             count++;
                         }

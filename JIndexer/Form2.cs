@@ -28,5 +28,18 @@ namespace JIndexer
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnOk_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                btnCancel_Click(sender, e);
+            }
+
+        }
     }
 }

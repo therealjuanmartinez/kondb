@@ -55,7 +55,7 @@
             this.listView1.FullRowSelect = true;
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(2, 102);
-            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(1375, 494);
             this.listView1.TabIndex = 0;
@@ -76,7 +76,7 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
@@ -100,9 +100,9 @@
             this.groupBox1.Controls.Add(this.cbShowNonWorking);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Location = new System.Drawing.Point(2, 2);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(1375, 96);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
@@ -112,7 +112,7 @@
             this.cbShowMultisOnly.AutoSize = true;
             this.cbShowMultisOnly.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbShowMultisOnly.Location = new System.Drawing.Point(1212, 42);
-            this.cbShowMultisOnly.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbShowMultisOnly.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowMultisOnly.Name = "cbShowMultisOnly";
             this.cbShowMultisOnly.Size = new System.Drawing.Size(137, 21);
             this.cbShowMultisOnly.TabIndex = 8;
@@ -125,7 +125,7 @@
             this.cbHideMissing.AutoSize = true;
             this.cbHideMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbHideMissing.Location = new System.Drawing.Point(1083, 42);
-            this.cbHideMissing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbHideMissing.Margin = new System.Windows.Forms.Padding(2);
             this.cbHideMissing.Name = "cbHideMissing";
             this.cbHideMissing.Size = new System.Drawing.Size(110, 21);
             this.cbHideMissing.TabIndex = 7;
@@ -138,7 +138,7 @@
             this.cbShowMissing.AutoSize = true;
             this.cbShowMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.cbShowMissing.Location = new System.Drawing.Point(920, 42);
-            this.cbShowMissing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbShowMissing.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowMissing.Name = "cbShowMissing";
             this.cbShowMissing.Size = new System.Drawing.Size(148, 21);
             this.cbShowMissing.TabIndex = 6;
@@ -197,7 +197,7 @@
             this.cbShowNonWorking.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.cbShowNonWorking.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.cbShowNonWorking.Location = new System.Drawing.Point(426, 42);
-            this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowNonWorking.Name = "cbShowNonWorking";
             this.cbShowNonWorking.Size = new System.Drawing.Size(151, 21);
             this.cbShowNonWorking.TabIndex = 1;
@@ -227,7 +227,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "JIndexer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);

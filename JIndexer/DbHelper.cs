@@ -530,9 +530,12 @@ namespace JIndexer
                                     fmd.CommandText += " OR ";
                                 }
 
-                                fmd.CommandText += " (upper(name) like @val" + count + innerOrCount;
-                                fmd.CommandText += " or upper(tags) like @val" + count + innerOrCount;
-                                fmd.CommandText += " or upper(file) like @val" + count + innerOrCount;
+                                var maybeNot = p.Trim()[0] == '-' ? " not " : "";
+                                var andOrOr = maybeNot.Length > 0 ? " and " : " or ";
+
+                                fmd.CommandText += " (upper(name)   " + maybeNot + " like @val" + count + innerOrCount;
+                                fmd.CommandText += andOrOr + " upper(tags) " + maybeNot + " like @val" + count + innerOrCount;
+                                fmd.CommandText += andOrOr + " upper(file) " + maybeNot + " like @val" + count + innerOrCount;
                                 fmd.CommandText += ")";
 
                                 SQLiteParameter lookupValue = new SQLiteParameter("@val" + count + innerOrCount);

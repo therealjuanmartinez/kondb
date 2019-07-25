@@ -6,7 +6,7 @@ This project was built to satisfy a need to have a separate app to manage a larg
 This app does not delete/move/rename/etc. your files, but it will make management of your files a lot easier.
 
 
-Features Include:
+<b>Features Include:</b>
 - Advanced Searching/sorting
 - Deduplication (for example, when you have more than one copy of a library but you only want results from faster storage)
 - Give instruments their own 1-5 star rating
@@ -15,6 +15,6 @@ Features Include:
 - Easily navigate to the folder containing your instruments
 
 
-Getting Started:
+<b>Getting Started:</b>
 - Drag-and-drop files/folders into this app from your computer at any time to add to your index.  If you drag in the same file(s) twice, it won't be re-added.
 - Drag-and-drop your NKI/NKM file(s) directly into Kontakt from this app

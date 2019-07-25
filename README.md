@@ -10,7 +10,6 @@ Features Include:
 - Advanced Searching/sorting
 - Deduplication (for example, when you have more than one copy of a library but you only want results from faster storage)
 - Give instruments their own 1-5 star rating
-- Drag-and-drop files directly into Kontakt from this app
 - Add your own tags/notes for one or more instruments/multis
 - Mark items as not working (in case of file corruption or other issues)
 - Easily navigate to the folder containing your instruments
@@ -18,3 +17,4 @@ Features Include:
 
 Getting Started:
 - Drag-and-drop files/folders into this app from your computer at any time to add to your index.  If you drag in the same file(s) twice, it won't be re-added.
+- Drag-and-drop your NKI/NKM file(s) directly into Kontakt from this app

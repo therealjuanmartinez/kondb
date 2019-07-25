@@ -1,5 +1,5 @@
 # kondb
-Easily Organize, Sort Through, and Load your Kontakt NKI/NKM Files
+Easily Organize, Sort Through, and Load your Kontakt NKI/NKM Files in Windows
 
 This project was built to satisfy a need to have a separate app to manage a large Kontakt files collection.
 

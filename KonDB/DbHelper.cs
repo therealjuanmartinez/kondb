@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JIndexer
+namespace KonDB
 {
     public sealed class ConnSingleton
     {
@@ -22,11 +22,12 @@ namespace JIndexer
         SQLiteConnection m_dbConnection;
         bool isOpen = false;
 
+
         public SQLiteConnection GetOpenConnection()
         {
             if (!isOpen)
             {
-                m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+                m_dbConnection = new SQLiteConnection("Data Source=" + DbHelper.dbname + ";Version=3;");
                 m_dbConnection.Open();
                 isOpen = true;
             }
@@ -80,16 +81,16 @@ namespace JIndexer
 
     static class DbHelper
     {
-        static string dbname = "jindexer.db";
+        public const string dbname = "kondb.db";
 
         public static void createDbIfNotExists()
         {
 
             if (!System.IO.File.Exists(dbname))
             {
-                SQLiteConnection.CreateFile("jindexer.db");
+                SQLiteConnection.CreateFile(dbname);
                 SQLiteConnection m_dbConnection;
-                m_dbConnection = new SQLiteConnection("Data Source=jindexer.db;Version=3;");
+                m_dbConnection = new SQLiteConnection("Data Source=" + dbname + ";Version=3;");
                 m_dbConnection.Open();
 
                 string sql = "CREATE TABLE items (" +

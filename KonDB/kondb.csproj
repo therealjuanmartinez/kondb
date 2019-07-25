@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A546AC5F-5EFE-497F-A3EE-CB72A7CF6A83}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>JIndexer</RootNamespace>
-    <AssemblyName>JIndexer</AssemblyName>
+    <RootNamespace>KonDB</RootNamespace>
+    <AssemblyName>KonDB</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

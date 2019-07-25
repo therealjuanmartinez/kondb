@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JIndexer
+namespace KonDB
 {
     public partial class FormTagEdit : Form
     {

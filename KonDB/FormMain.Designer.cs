@@ -1,4 +1,4 @@
-﻿namespace JIndexer
+﻿namespace KonDB
 {
     partial class FormMain
     {

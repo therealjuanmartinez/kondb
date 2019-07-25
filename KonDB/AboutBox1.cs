@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JIndexer
+namespace KonDB
 {
     partial class AboutBox1 : Form
     {

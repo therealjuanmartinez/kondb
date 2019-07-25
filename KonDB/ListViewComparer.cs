@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace JIndexer
+namespace KonDB
 {
     // Compares two ListView items based on a selected column.
     public class ListViewComparer : System.Collections.IComparer

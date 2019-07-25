@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace JIndexer
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
 
         Color workingInstColor = Color.White;
@@ -26,7 +26,7 @@ namespace JIndexer
         const int nameGridIndex = 1;
 
 
-        public Form1()
+        public FormMain()
         {
             InitializeComponent();
 
@@ -41,9 +41,7 @@ namespace JIndexer
             cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showstarredonly") == "T") ? true : false;
             cbShowFavoritesOnly.CheckedChanged += cbShowFavoritesOnly_CheckedChanged;
 
-            textBox1.DelayedTextChanged -= textBox1_DelayedTextChanged;
             textBox1.Text = DbHelper.getSetting("searchterm");
-            textBox1.DelayedTextChanged += textBox1_DelayedTextChanged; //having this all the way down here hopefully will defeat the delay
 
             cbShowWorking.CheckedChanged -= cbShowWorking_CheckedChanged;
             cbShowWorking.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
@@ -52,27 +50,6 @@ namespace JIndexer
             cbShowMultisOnly.CheckedChanged -= cbShowMultisOnly_CheckedChanged;
             cbShowMultisOnly.Checked = (DbHelper.getSetting("showmultisonly") == "T") ? true : false;
             cbShowMultisOnly.CheckedChanged += cbShowMultisOnly_CheckedChanged;
-
-
-            /*
-            cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
-            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showmissingonly") == "T") ? true : false;
-            cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
-
-            cbShowMissing.CheckedChanged -= cbShowWorking_CheckedChanged;
-            cbShowFavoritesOnly.Checked = (DbHelper.getSetting("hidemissing") == "T") ? true : false;
-            cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
-            */
-
-
-
-            //THIS BELOW HAPPENS BY THE DELAYEDTEXTCHANGED WHICH I CAN'T SEEM TO DISABLE UPON FIRST RUN :(
-            /*
-            if (FiltersApplied())
-            {
-                clearAndLoadTable();
-            }*/
-
         }
 
         private bool FiltersApplied()
@@ -150,7 +127,7 @@ namespace JIndexer
 
         public void ShowTagsDialogBox(bool trueToAddOrFalseToReplace) //apologies for this naming
         {
-            Form2 tagDialog = new Form2();
+            FormTagEdit tagDialog = new FormTagEdit();
 
             // Show tagDialog as a modal dialog and determine if DialogResult = OK.
             if (tagDialog.ShowDialog(this) == DialogResult.OK)
@@ -955,6 +932,17 @@ namespace JIndexer
                 }*/
                 clearAndLoadTable();
             }
+        }
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            ShowAboutHelp();
+        }
+
+        private void ShowAboutHelp()
+        {
+            AboutBox1 aboutDialog = new AboutBox1();
+            aboutDialog.Show();
         }
     }
 }

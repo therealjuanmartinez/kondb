@@ -1,6 +1,6 @@
 ﻿namespace JIndexer
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.listView1 = new System.Windows.Forms.ListView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -40,7 +40,8 @@
             this.lblStatus = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbShowNonWorking = new System.Windows.Forms.CheckBox();
-            this.textBox1 = new JIndexer.MyTextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +91,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.groupBox1.Controls.Add(this.btnAbout);
             this.groupBox1.Controls.Add(this.cbShowMultisOnly);
             this.groupBox1.Controls.Add(this.cbHideMissing);
             this.groupBox1.Controls.Add(this.cbShowMissing);
@@ -111,7 +113,7 @@
             // 
             this.cbShowMultisOnly.AutoSize = true;
             this.cbShowMultisOnly.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.cbShowMultisOnly.Location = new System.Drawing.Point(1212, 42);
+            this.cbShowMultisOnly.Location = new System.Drawing.Point(1212, 36);
             this.cbShowMultisOnly.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowMultisOnly.Name = "cbShowMultisOnly";
             this.cbShowMultisOnly.Size = new System.Drawing.Size(137, 21);
@@ -124,7 +126,7 @@
             // 
             this.cbHideMissing.AutoSize = true;
             this.cbHideMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.cbHideMissing.Location = new System.Drawing.Point(1083, 42);
+            this.cbHideMissing.Location = new System.Drawing.Point(1083, 36);
             this.cbHideMissing.Margin = new System.Windows.Forms.Padding(2);
             this.cbHideMissing.Name = "cbHideMissing";
             this.cbHideMissing.Size = new System.Drawing.Size(110, 21);
@@ -137,7 +139,7 @@
             // 
             this.cbShowMissing.AutoSize = true;
             this.cbShowMissing.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.cbShowMissing.Location = new System.Drawing.Point(920, 42);
+            this.cbShowMissing.Location = new System.Drawing.Point(920, 36);
             this.cbShowMissing.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowMissing.Name = "cbShowMissing";
             this.cbShowMissing.Size = new System.Drawing.Size(148, 21);
@@ -152,7 +154,7 @@
             this.cbShowWorking.Checked = true;
             this.cbShowWorking.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbShowWorking.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.cbShowWorking.Location = new System.Drawing.Point(603, 42);
+            this.cbShowWorking.Location = new System.Drawing.Point(430, 36);
             this.cbShowWorking.Name = "cbShowWorking";
             this.cbShowWorking.Size = new System.Drawing.Size(120, 21);
             this.cbShowWorking.TabIndex = 5;
@@ -164,7 +166,7 @@
             // 
             this.cbShowFavoritesOnly.AutoSize = true;
             this.cbShowFavoritesOnly.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(751, 42);
+            this.cbShowFavoritesOnly.Location = new System.Drawing.Point(751, 36);
             this.cbShowFavoritesOnly.Name = "cbShowFavoritesOnly";
             this.cbShowFavoritesOnly.Size = new System.Drawing.Size(148, 21);
             this.cbShowFavoritesOnly.TabIndex = 4;
@@ -175,7 +177,7 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(138, 70);
+            this.lblStatus.Location = new System.Drawing.Point(138, 64);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(20, 17);
             this.lblStatus.TabIndex = 3;
@@ -185,7 +187,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label1.Location = new System.Drawing.Point(24, 42);
+            this.label1.Location = new System.Drawing.Point(24, 36);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(111, 17);
             this.label1.TabIndex = 2;
@@ -196,7 +198,7 @@
             this.cbShowNonWorking.AutoSize = true;
             this.cbShowNonWorking.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.cbShowNonWorking.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.cbShowNonWorking.Location = new System.Drawing.Point(426, 42);
+            this.cbShowNonWorking.Location = new System.Drawing.Point(574, 36);
             this.cbShowNonWorking.Margin = new System.Windows.Forms.Padding(2);
             this.cbShowNonWorking.Name = "cbShowNonWorking";
             this.cbShowNonWorking.Size = new System.Drawing.Size(151, 21);
@@ -208,17 +210,26 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.WindowText;
-            this.textBox1.DelayedTextChangedTimeout = 250;
             this.textBox1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.textBox1.Location = new System.Drawing.Point(138, 40);
+            this.textBox1.Location = new System.Drawing.Point(138, 34);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(255, 22);
             this.textBox1.TabIndex = 0;
-            this.textBox1.DelayedTextChanged += new System.EventHandler(this.textBox1_DelayedTextChanged);
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
-            // Form1
+            // btnAbout
+            // 
+            this.btnAbout.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnAbout.Location = new System.Drawing.Point(27, 56);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(105, 31);
+            this.btnAbout.TabIndex = 9;
+            this.btnAbout.Text = "About/Help";
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -228,8 +239,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "Form1";
-            this.Text = "JIndexer";
+            this.Name = "FormMain";
+            this.Text = "KonDB";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
@@ -245,7 +256,7 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private MyTextBox textBox1;
+        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox cbShowNonWorking;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblStatus;
@@ -254,6 +265,7 @@
         private System.Windows.Forms.CheckBox cbShowMissing;
         private System.Windows.Forms.CheckBox cbHideMissing;
         private System.Windows.Forms.CheckBox cbShowMultisOnly;
+        private System.Windows.Forms.Button btnAbout;
     }
 }
 

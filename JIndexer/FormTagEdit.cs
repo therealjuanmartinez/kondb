@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace JIndexer
 {
-    public partial class Form2 : Form
+    public partial class FormTagEdit : Form
     {
-        public Form2()
+        public FormTagEdit()
         {
             InitializeComponent();
         }

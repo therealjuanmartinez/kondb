@@ -1,6 +1,6 @@
 ﻿namespace JIndexer
 {
-    partial class Form2
+    partial class FormTagEdit
     {
         /// <summary>
         /// Required designer variable.

@@ -35,7 +35,10 @@ namespace KonDB
             listView1.Columns.Add("Tags");
             listView1.Columns.Add("Path");
 
-            DbHelper.createDbIfNotExists();
+            if (DbHelper.createDbIfNotExists())
+            {
+                MessageBox.Show("To get started, drag and drop your .nki/.nkm files (or folders containing these files) into the main window!");
+            }
 
             cbShowFavoritesOnly.CheckedChanged -= cbShowFavoritesOnly_CheckedChanged;
             cbShowFavoritesOnly.Checked = (DbHelper.getSetting("showstarredonly") == "T") ? true : false;
@@ -44,7 +47,7 @@ namespace KonDB
             textBox1.Text = DbHelper.getSetting("searchterm");
 
             cbShowWorking.CheckedChanged -= cbShowWorking_CheckedChanged;
-            cbShowWorking.Checked = (DbHelper.getSetting("showworking") == "T") ? true : false;
+            cbShowWorking.Checked = (DbHelper.getSetting("showworking") == "F") ? false : true;
             cbShowWorking.CheckedChanged += cbShowWorking_CheckedChanged;
 
             cbShowMultisOnly.CheckedChanged -= cbShowMultisOnly_CheckedChanged;

@@ -107,5 +107,10 @@ namespace KonDB
         {
             this.Close();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.paypal.com/donate/?token=2tCngkMePDVQpHlCRId0rWmkgALZOlaIf4j8zYgs2JACPuvbRqnyN5x_GPLFTLX2ELHoVm&country.x=US&locale.x=US");
+        }
     }
 }

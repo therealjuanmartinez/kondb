@@ -83,7 +83,7 @@ namespace KonDB
     {
         public const string dbname = "kondb.db";
 
-        public static void createDbIfNotExists()
+        public static bool createDbIfNotExists()
         {
 
             if (!System.IO.File.Exists(dbname))
@@ -111,7 +111,9 @@ namespace KonDB
                 command.ExecuteNonQuery();
 
                 m_dbConnection.Close();
+                return true;
             }
+            return false;
         }
 
 

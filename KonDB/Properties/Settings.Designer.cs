@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Drawing;
+
 namespace KonDB.Properties {
     
     
@@ -46,13 +48,14 @@ namespace KonDB.Properties {
                 this["F1Location"] = value;
             }
         }
-        
+
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
         public global::System.Drawing.Size F1Size {
             get {
-                return ((global::System.Drawing.Size)(this["F1Size"]));
+               return ((global::System.Drawing.Size)(this["F1Size"]));
             }
             set {
                 this["F1Size"] = value;

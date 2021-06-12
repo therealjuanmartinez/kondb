@@ -467,9 +467,16 @@ namespace KonDB
         private void menuItemDedupTop(object sender, EventArgs e)
         {
             DbHelper.optionalBeginTransactionForSpeed();
-            var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), true);
-            DbHelper.optionalEndTransactionForSpeed();
-            RemoveInstrumentsFromView(deletedInstruments);
+            try
+            {
+                var deletedInstruments = DbHelper.Dedupe(GetSelectedInstruments(), true);
+                DbHelper.optionalEndTransactionForSpeed();
+                RemoveInstrumentsFromView(deletedInstruments);
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Part of your selection includes files that are missing - first remove them (the ones in red) before deduplicating");
+            }
         }
         private void menuItemDedupBottom(object sender, EventArgs e)
         {
